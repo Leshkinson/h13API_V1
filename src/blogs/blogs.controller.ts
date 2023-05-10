@@ -1,15 +1,4 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Put,
-    Param,
-    Delete,
-    Req,
-    Res,
-    HttpStatus,
-} from "@nestjs/common";
+import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
 import { BlogsService } from "./blogs.service";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { BlogsRequest } from "./types/blog.type";
@@ -22,10 +11,7 @@ export class BlogsController {
     constructor(private readonly blogsService: BlogsService) {}
 
     @Post()
-    public async create(
-        @Body() createBlogDto: CreateBlogDto,
-        @Res() res: Response,
-    ) {
+    public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
             return this.blogsService.createBlog(createBlogDto);
         } catch (error) {
@@ -37,15 +23,9 @@ export class BlogsController {
     }
 
     @Get()
-    public async getAllBlogs(@Req() req: Request, @Res() res: Response) {
+    public async findAllBlogs(@Req() req: Request, @Res() res: Response) {
         try {
-            let {
-                pageNumber,
-                pageSize,
-                sortBy,
-                searchNameTerm,
-                sortDirection,
-            } = req.query as BlogsRequest;
+            let { pageNumber, pageSize, sortBy, searchNameTerm, sortDirection } = req.query as BlogsRequest;
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);
             const blogs: IBlog[] = await this.blogsService.findAllBlogs(
@@ -55,9 +35,7 @@ export class BlogsController {
                 sortBy,
                 sortDirection,
             );
-            const totalCount: number = await queryService.getTotalCountForBlogs(
-                searchNameTerm,
-            );
+            const totalCount: number = await queryService.getTotalCountForBlogs(searchNameTerm);
 
             res.status(200).json({
                 pagesCount: Math.ceil(totalCount / pageSize),
@@ -80,11 +58,7 @@ export class BlogsController {
     }
 
     @Put(":id")
-    public async update(
-        @Param("id") id: string,
-        @Res() res: Response,
-        @Body() updateBlogDto: UpdateBlogDto,
-    ) {
+    public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         const updateBlog = await this.blogsService.update(+id, updateBlogDto);
         if (updateBlog) res.sendStatus(HttpStatus.NO_CONTENT);
     }

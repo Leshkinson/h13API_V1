@@ -30,10 +30,7 @@ export class PostsRepository {
         return this.postModel.findById({ _id: id });
     }
 
-    public async updatePost(
-        id: RefType,
-        updatePostDto: UpdatePostDto,
-    ): Promise<IPost | null> {
+    public async updatePost(id: RefType, updatePostDto: UpdatePostDto): Promise<IPost | null> {
         return this.postModel.findOneAndUpdate({ _id: id }, updatePostDto);
     }
 

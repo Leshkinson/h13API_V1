@@ -11,10 +11,7 @@ import { BlogModel } from "../blogs/schema/blog.schema";
 
 @Injectable()
 export class PostsService {
-    constructor(
-        private readonly postRepository: PostsRepository,
-        private readonly blogRepository: BlogsRepository,
-    ) {
+    constructor(private readonly postRepository: PostsRepository, private readonly blogRepository: BlogsRepository) {
         this.postRepository = new PostsRepository(PostModel);
         this.blogRepository = new BlogsRepository(BlogModel);
     }
@@ -30,13 +27,7 @@ export class PostsService {
     ): Promise<IPost[]> {
         const skip: number = (pageNumber - 1) * pageSize;
 
-        return await this.postRepository.findAll(
-            pageNumber,
-            pageSize,
-            sortBy,
-            skip,
-            sortDirection,
-        );
+        return await this.postRepository.findAll(pageNumber, pageSize, sortBy, skip, sortDirection);
     }
 
     public async findOne(id: RefType): Promise<IPost | undefined> {
@@ -45,15 +36,9 @@ export class PostsService {
 
         return post;
     }
-    public async update(
-        id: RefType,
-        updatePostDto: UpdatePostDto,
-    ): Promise<IPost | undefined> {
-        const blog: IBlog | undefined | null = await this.blogRepository.find(
-            updatePostDto.blogId,
-        );
-        const updatePost: IPost | undefined | null =
-            await this.postRepository.updatePost(id, updatePostDto);
+    public async update(id: RefType, updatePostDto: UpdatePostDto): Promise<IPost | undefined> {
+        const blog: IBlog | undefined | null = await this.blogRepository.find(updatePostDto.blogId);
+        const updatePost: IPost | undefined | null = await this.postRepository.updatePost(id, updatePostDto);
         if (blog && updatePost) {
             updatePost.title = updatePostDto.title;
             updatePost.shortDescription = updatePostDto.shortDescription;
@@ -64,9 +49,13 @@ export class PostsService {
         throw new Error();
     }
 
-    public async delete(id: string): Promise<IPost> {
+    public async delete(id: RefType): Promise<IPost> {
         const deletePost = await this.postRepository.deletePost(id);
         if (deletePost) return deletePost;
         throw new Error();
+    }
+
+    public async testingDelete(): Promise<void> {
+        await this.postRepository.deleteAll();
     }
 }

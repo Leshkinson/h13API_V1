@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Put, Param, Delete, Res, HttpStatus, Req } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { Request, Response } from "express";
@@ -50,17 +50,19 @@ export class PostsController {
     }
 
     @Get(":id")
-    findOne(@Param("id") id: string) {
+    public async findOne(@Param("id") id: string) {
         return this.postsService.findOne(+id);
     }
 
-    @Patch(":id")
-    update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
+    @Put(":id")
+    public async update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
         return this.postsService.update(+id, updatePostDto);
     }
 
     @Delete(":id")
-    remove(@Param("id") id: string) {
-        return this.postsService.remove(+id);
+    public async delete(@Param("id") id: string) {
+        return this.postsService.delete(id);
     }
+
+    @Delete
 }
