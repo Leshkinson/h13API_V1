@@ -8,5 +8,5 @@ export interface IPost extends Document {
     content: string;
     blogId: string;
     blogName: string;
-    extendedLikesInfo: ExtendedLikesInfo;
+    //extendedLikesInfo: ExtendedLikesInfo;
 }

@@ -13,7 +13,8 @@ export class BlogsController {
     @Post()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
-            return this.blogsService.createBlog(createBlogDto);
+            const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
+            res.status(201).json(newBlog);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
@@ -35,15 +36,15 @@ export class BlogsController {
                 sortBy,
                 sortDirection,
             );
-            const totalCount: number = await queryService.getTotalCountForBlogs(searchNameTerm);
+           // const totalCount: number = await queryService.getTotalCountForBlogs(searchNameTerm);
 
-            res.status(200).json({
-                pagesCount: Math.ceil(totalCount / pageSize),
-                page: pageNumber,
-                pageSize: pageSize,
-                totalCount: totalCount,
-                items: blogs,
-            });
+            // res.status(200).json({
+            //     pagesCount: Math.ceil(totalCount / pageSize),
+            //     page: pageNumber,
+            //     pageSize: pageSize,
+            //     totalCount: totalCount,
+            //     items: blogs,
+            // });
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);

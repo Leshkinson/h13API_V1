@@ -22,7 +22,7 @@ export class UsersController {
     }
 
     @Get()
-    getAllUsers(@Req() req: Request, @Res() res: Response) {
+    public async getAllUsers(@Req() req: Request, @Res() res: Response) {
         try {
             let { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } =
                 req.query as UsersRequest;
@@ -37,15 +37,15 @@ export class UsersController {
                 searchLoginTerm,
                 searchEmailTerm,
             );
-            const totalCount: number = await queryService.getTotalCountForUsers(searchLoginTerm, searchEmailTerm);
+           // const totalCount: number = await queryService.getTotalCountForUsers(searchLoginTerm, searchEmailTerm);
 
-            res.status(200).json({
-                pagesCount: Math.ceil(totalCount / pageSize),
-                page: pageNumber,
-                pageSize: pageSize,
-                totalCount: totalCount,
-                items: users,
-            });
+            // res.status(200).json({
+            //     pagesCount: Math.ceil(totalCount / pageSize),
+            //     page: pageNumber,
+            //     pageSize: pageSize,
+            //     totalCount: totalCount,
+            //     items: users,
+            // });
         } catch (error) {
             if (error instanceof Error) throw new Error(error.message);
         }
@@ -62,9 +62,9 @@ export class UsersController {
     // }
 
     @Delete(":id")
-    delete(@Param("id") id: string, @Res() res: Response) {
+    public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
-            return this.usersService.delete(id);
+            return await this.usersService.delete(id);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(404);

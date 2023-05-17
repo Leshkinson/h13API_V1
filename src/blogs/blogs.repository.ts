@@ -3,13 +3,14 @@ import { IBlog } from "./interface/blog.interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
+import {InjectModel} from "@nestjs/mongoose";
 
 @Injectable()
 export class BlogsRepository {
-    constructor(@Inject("Blog") private readonly blogModel: Model<IBlog>) {}
+    constructor(@Inject("BLOG_MODEL") private readonly blogModel: Model<IBlog>) {}
 
     public async create(createBlogDto: CreateBlogDto): Promise<IBlog> {
-        return this.blogModel.create(createBlogDto);
+        return this.blogModel.create({...createBlogDto, isMembership: false});
     }
 
     public async findAll(

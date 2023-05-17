@@ -6,7 +6,7 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Injectable()
 export class PostsRepository {
-    constructor(@Inject("IPost") private readonly postModel: Model<IPost>) {}
+    constructor(@Inject("Post") private readonly postModel: Model<IPost>) {}
 
     public async create(createPostDto: CreatePostDto): Promise<IPost> {
         return this.postModel.create(createPostDto);

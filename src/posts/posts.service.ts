@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PostsRepository } from "./posts.repository";
@@ -8,10 +8,12 @@ import { RefType, SortOrder } from "mongoose";
 import { IBlog } from "../blogs/interface/blog.interface";
 import { BlogsRepository } from "../blogs/blogs.repository";
 import { BlogModel } from "../blogs/schema/blog.schema";
+import {INQUIRER} from "@nestjs/core";
 
 @Injectable()
 export class PostsService {
-    constructor(private readonly postRepository: PostsRepository, private readonly blogRepository: BlogsRepository) {
+    constructor(@Inject('postRepository') private readonly postRepository: PostsRepository,
+                @Inject('blogRepository') private readonly blogRepository: BlogsRepository) {
         this.postRepository = new PostsRepository(PostModel);
         this.blogRepository = new BlogsRepository(BlogModel);
     }

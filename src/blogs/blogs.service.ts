@@ -1,18 +1,20 @@
 import { RefType, SortOrder } from "mongoose";
 import { IBlog } from "./interface/blog.interface";
-import { Injectable } from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 import { BlogsRepository } from "./blogs.repository";
 import { BlogModel } from "./schema/blog.schema";
+import {INQUIRER} from "@nestjs/core";
 
 @Injectable()
 export class BlogsService {
-    constructor(private readonly blogRepository: BlogsRepository) {
+    constructor(@Inject('blogRepository') private readonly blogRepository: BlogsRepository) {
         this.blogRepository = new BlogsRepository(BlogModel);
     }
 
     public async createBlog(createBlogDto: CreateBlogDto): Promise<IBlog> {
+
         return this.blogRepository.create(createBlogDto);
     }
 

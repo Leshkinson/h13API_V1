@@ -32,16 +32,16 @@ export class PostsController {
 
             const posts: IPost[] = await this.postsService.findAllPosts(pageNumber, pageSize, sortBy, sortDirection);
 
-            const totalCount: number = await queryService.getTotalCountForPosts();
-            if (posts) {
-                res.status(200).json({
-                    pagesCount: Math.ceil(totalCount / pageSize),
-                    page: pageNumber,
-                    pageSize: pageSize,
-                    totalCount: totalCount,
-                    items: await queryService.getUpgradePosts(posts, token, postService),
-                });
-            }
+            //const totalCount: number = await queryService.getTotalCountForPosts();
+            // if (posts) {
+            //     res.status(200).json({
+            //         pagesCount: Math.ceil(totalCount / pageSize),
+            //         page: pageNumber,
+            //         pageSize: pageSize,
+            //         totalCount: totalCount,
+            //         items: await queryService.getUpgradePosts(posts, token, postService),
+            //     });
+            // }
         } catch (error) {
             if (error instanceof Error) {
                 console.log(error.message);
@@ -64,5 +64,5 @@ export class PostsController {
         return this.postsService.delete(id);
     }
 
-    @Delete
+    //@Delete
 }
