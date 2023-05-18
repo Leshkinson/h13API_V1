@@ -10,7 +10,7 @@ export class BlogsRepository {
     constructor(@Inject("BLOG_MODEL") private readonly blogModel: Model<IBlog>) {}
 
     public async create(createBlogDto: CreateBlogDto): Promise<IBlog> {
-        return this.blogModel.create({...createBlogDto, isMembership: false});
+        return this.blogModel.create({ ...createBlogDto, isMembership: false });
     }
 
     public async findAll(
@@ -37,6 +37,10 @@ export class BlogsRepository {
 
     public async delete(id: RefType) {
         return this.blogModel.findOneAndDelete({ _id: id });
+    }
+
+    public async getBlogsCount(searchNameTerm: { name: { $regex: RegExp } } | {} = {}): Promise<number> {
+        return this.blogModel.countDocuments(searchNameTerm);
     }
 
     public async deleteAll() {

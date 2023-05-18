@@ -7,3 +7,11 @@ export type BlogsRequest = {
     searchNameTerm?: string | undefined;
     sortDirection?: SortOrder;
 };
+
+export type BlogsRequestWithoutSNT = {
+    pageNumber?: number | undefined;
+    pageSize?: number | undefined;
+    sizePage?: string | undefined;
+    sortBy?: string | undefined;
+    sortDirection?: SortOrder;
+}

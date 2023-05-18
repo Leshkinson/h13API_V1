@@ -1,4 +1,4 @@
-import {Inject, Injectable} from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PostsRepository } from "./posts.repository";
@@ -11,8 +11,10 @@ import { BlogModel } from "../blogs/schema/blog.schema";
 
 @Injectable()
 export class PostsService {
-    constructor(@Inject('postRepository') private readonly postRepository: PostsRepository,
-                @Inject('blogRepository') private readonly blogRepository: BlogsRepository) {
+    constructor(
+        @Inject("postRepository") private readonly postRepository: PostsRepository,
+        @Inject("blogRepository") private readonly blogRepository: BlogsRepository,
+    ) {
         this.postRepository = new PostsRepository(PostModel);
         this.blogRepository = new BlogsRepository(BlogModel);
     }
@@ -54,6 +56,9 @@ export class PostsService {
         const deletePost = await this.postRepository.deletePost(id);
         if (deletePost) return deletePost;
         throw new Error();
+    }
+    public async getTotalCountForPosts(): Promise<number> {
+        return await this.postRepository.getTotalCount();
     }
 
     public async testingDelete(): Promise<void> {

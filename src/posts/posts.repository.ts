@@ -38,6 +38,10 @@ export class PostsRepository {
         return this.postModel.findOneAndDelete({ _id: id });
     }
 
+    public async getTotalCount(): Promise<number> {
+        return this.postModel.find().count();
+    }
+
     public async deleteAll() {
         return this.postModel.deleteMany();
     }
