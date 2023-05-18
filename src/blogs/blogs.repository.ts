@@ -3,7 +3,7 @@ import { IBlog } from "./interface/blog.interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
-import {InjectModel} from "@nestjs/mongoose";
+//import {InjectModel} from "@nestjs/mongoose";
 
 @Injectable()
 export class BlogsRepository {
@@ -31,10 +31,7 @@ export class BlogsRepository {
         return this.blogModel.findById({ _id: id });
     }
 
-    public async updateBlog(
-        id: RefType,
-        updateBlogDto: UpdateBlogDto,
-    ): Promise<IBlog | null> {
+    public async updateBlog(id: RefType, updateBlogDto: UpdateBlogDto): Promise<IBlog | null> {
         return this.blogModel.findOneAndUpdate({ _id: id }, updateBlogDto);
     }
 

@@ -1,5 +1,5 @@
 import { Connection } from 'mongoose';
-import { BlogSchema} from "./schema/blog.schema";
+import { BlogSchema } from "./schema/blog.schema";
 
 export const blogsProviders = [
     {

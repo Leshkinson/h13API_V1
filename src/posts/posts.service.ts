@@ -8,7 +8,6 @@ import { RefType, SortOrder } from "mongoose";
 import { IBlog } from "../blogs/interface/blog.interface";
 import { BlogsRepository } from "../blogs/blogs.repository";
 import { BlogModel } from "../blogs/schema/blog.schema";
-import {INQUIRER} from "@nestjs/core";
 
 @Injectable()
 export class PostsService {
