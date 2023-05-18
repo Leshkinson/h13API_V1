@@ -14,7 +14,7 @@ export class BlogsController {
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
-            res.status(HttpStatus.CREATED).json(newBlog);
+            res.status(201).json(newBlog);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
