@@ -5,12 +5,17 @@ import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
 import { IBlog } from "./interface/blog.interface";
 import { Request, Response } from "express";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
-import { IPost } from "../posts/interface/post.interface";
-import { CreatePostDto } from "../posts/dto/create-post.dto";
+import { ICreatePostDtoWithoutIdAndName, IPost } from "../posts/interface/post.interface";
+import { QueryService } from "../sup-services/query/query.service";
+import { PostsService } from "../posts/posts.service";
 
 @Controller("blogs")
 export class BlogsController {
-    constructor(private readonly blogsService: BlogsService) {}
+    constructor(
+        private readonly blogsService: BlogsService,
+        private readonly queryService: QueryService,
+        private readonly postsService: PostsService,
+    ) {}
 
     @Post()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
@@ -101,26 +106,26 @@ export class BlogsController {
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);
 
-            const posts: IPost[] = await queryService.getPostsForTheBlog(
+            const posts: IPost[] = await this.queryService.getPostsForTheBlog(
                 blogId,
                 pageNumber,
                 pageSize,
                 sortBy,
                 sortDirection,
             );
-            const totalCount: number = await queryService.getTotalCountPostsForTheBlog(blogId);
+            const totalCount: number = await this.queryService.getTotalCountPostsForTheBlog(blogId);
             if (posts) {
                 res.status(HttpStatus.CREATED).json({
                     pagesCount: Math.ceil(totalCount / pageSize),
                     page: pageNumber,
                     pageSize: pageSize,
                     totalCount: totalCount,
-                    items: await queryService.getUpgradePosts(posts, token, postService),
+                    items: await this.queryService.getUpgradePosts(posts, token, this.postsService),
                 });
             }
         } catch (error) {
             if (error instanceof Error) {
-                res.sendStatus(404);
+                res.sendStatus(HttpStatus.NOT_FOUND);
                 console.log(error.message);
             }
         }
@@ -129,13 +134,15 @@ export class BlogsController {
     @Post()
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
-        @Body() createPostDto: CreatePostDto,
+        @Body() createPostDtoWithoutIdAndName: ICreatePostDtoWithoutIdAndName,
         @Req() req: Request,
         @Res() res: Response,
     ) {
         try {
-            const newPost: IPost | undefined = await queryService.createPostForTheBlog(blogId, createPostDto);
-
+            const newPost: IPost | undefined = await this.queryService.createPostForTheBlog(
+                createPostDtoWithoutIdAndName,
+                blogId,
+            );
             if (newPost) res.status(HttpStatus.CREATED).json(newPost);
         } catch (error) {
             if (error instanceof Error) {

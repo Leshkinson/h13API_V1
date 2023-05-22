@@ -26,6 +26,10 @@ export class UsersRepository {
             .limit(limit);
     }
 
+    public async find(id: RefType): Promise<IUser> {
+        return this.userModel.findById({ _id: id });
+    }
+
     public async delete(id: RefType) {
         return this.userModel.findOneAndDelete({ _id: id });
     }

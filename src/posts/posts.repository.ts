@@ -13,6 +13,7 @@ export class PostsRepository {
     }
 
     public async findAll(
+        blogId?: RefType,
         pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
@@ -20,7 +21,7 @@ export class PostsRepository {
         sortDirection: SortOrder = "desc",
     ): Promise<IPost[]> {
         return this.postModel
-            .find()
+            .find({ blogId })
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit);
@@ -40,6 +41,10 @@ export class PostsRepository {
 
     public async getTotalCount(): Promise<number> {
         return this.postModel.find().count();
+    }
+
+    public async getTotalCountWithFilter(param: string): Promise<number> {
+        return this.postModel.find({ blogId: param }).count();
     }
 
     public async deleteAll() {

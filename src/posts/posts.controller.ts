@@ -5,10 +5,12 @@ import { Request, Response } from "express";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { IPost } from "./interface/post.interface";
 import { PostsRequest } from "./types/post.types";
+import { RefType } from "mongoose";
+import { QueryService } from "../sup-services/query/query.service";
 
 @Controller("posts")
 export class PostsController {
-    constructor(private readonly postsService: PostsService) {}
+    constructor(private readonly postsService: PostsService, private readonly queryService: QueryService) {}
 
     @Post()
     public async create(@Body() createPostDto: CreatePostDto, @Res() res: Response) {
@@ -30,7 +32,7 @@ export class PostsController {
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);
 
-            const posts: IPost[] = await this.postsService.findAllPosts(pageNumber, pageSize, sortBy, sortDirection);
+            const posts: IPost[] = await this.postsService.findAllPosts( pageNumber, pageSize, sortBy, sortDirection);
 
             const totalCount: number = await this.postsService.getTotalCountForPosts();
             if (posts) {
@@ -39,7 +41,7 @@ export class PostsController {
                     page: pageNumber,
                     pageSize: pageSize,
                     totalCount: totalCount,
-                    items: await queryService.getUpgradePosts(posts, token, postService),
+                    items: await this.queryService.getUpgradePosts(posts, token),
                 });
             }
         } catch (error) {

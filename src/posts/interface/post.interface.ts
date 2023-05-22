@@ -1,5 +1,6 @@
 import { Document } from "mongoose";
 import * as mongoose from "mongoose";
+import { ExtendedLikesInfo } from "../../sup-services/query/interface/like.interface";
 
 export interface IPost extends Document {
     _id: mongoose.Schema.Types.ObjectId;
@@ -8,5 +9,19 @@ export interface IPost extends Document {
     content: string;
     blogId: string;
     blogName: string;
-    //extendedLikesInfo: ExtendedLikesInfo;
+    extendedLikesInfo: ExtendedLikesInfo;
 }
+
+export interface ICreatePostDtoWithoutIdAndName {
+    title: string;
+    shortDescription: string;
+    content: string;
+}
+
+// export interface ICreatePostDto {
+//     title: string;
+//     shortDescription: string;
+//     content: string;
+//     blogId: string;
+//     blogName: string;
+// }
