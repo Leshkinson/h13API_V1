@@ -7,15 +7,11 @@ import { Request, Response } from "express";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 import { ICreatePostDtoWithoutIdAndName, IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
-import { PostsService } from "../posts/posts.service";
+import { TAG_REPOSITORY } from "../const/const";
 
 @Controller("blogs")
 export class BlogsController {
-    constructor(
-        private readonly blogsService: BlogsService,
-        private readonly queryService: QueryService,
-        private readonly postsService: PostsService,
-    ) {}
+    constructor(private readonly blogsService: BlogsService, private readonly queryService: QueryService) {}
 
     @Post()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
@@ -87,7 +83,7 @@ export class BlogsController {
     }
 
     @Delete(":id")
-    public async remove(@Param("id") id: string, @Res() res: Response) {
+    public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.blogsService.delete(id);
             res.sendStatus(HttpStatus.NO_CONTENT);
@@ -120,7 +116,7 @@ export class BlogsController {
                     page: pageNumber,
                     pageSize: pageSize,
                     totalCount: totalCount,
-                    items: await this.queryService.getUpgradePosts(posts, token, this.postsService),
+                    items: await this.queryService.getUpgradePosts(posts, token, TAG_REPOSITORY.PostsRepository),
                 });
             }
         } catch (error) {

@@ -1,10 +1,10 @@
 import { RefType, SortOrder } from "mongoose";
+import { BlogModel } from "./schema/blog.schema";
 import { IBlog } from "./interface/blog.interface";
 import { Inject, Injectable } from "@nestjs/common";
+import { BlogsRepository } from "./blogs.repository";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
-import { BlogsRepository } from "./blogs.repository";
-import { BlogModel } from "./schema/blog.schema";
 
 @Injectable()
 export class BlogsService {

@@ -1,5 +1,4 @@
-import * as mongoose from "mongoose";
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IBlog } from "../interface/blog.interface";
 
 export const BlogSchema = new Schema(

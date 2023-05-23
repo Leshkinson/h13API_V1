@@ -1,21 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Request, Response } from "express";
 import { IUser } from "./interface/user.interface";
 import { UsersRequest } from "./types/user.type";
+import { QueryService } from "../sup-services/query/query.service";
 
 @Controller("users")
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService, private readonly queryService: QueryService) {}
 
     @Post()
     public async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
         try {
             const newUser: IUser = await this.usersService.create(createUserDto);
-            res.status(201).json(newUser);
+            res.status(HttpStatus.CREATED).json(newUser);
         } catch (error) {
             if (error instanceof Error) {
+                res.sendStatus(HttpStatus.NOT_FOUND);
                 throw new Error(error.message);
             }
         }
@@ -37,37 +39,31 @@ export class UsersController {
                 searchLoginTerm,
                 searchEmailTerm,
             );
-           // const totalCount: number = await queryService.getTotalCountForUsers(searchLoginTerm, searchEmailTerm);
+            const totalCount: number = await this.queryService.getTotalCountForUsers(searchLoginTerm, searchEmailTerm);
 
-            // res.status(200).json({
-            //     pagesCount: Math.ceil(totalCount / pageSize),
-            //     page: pageNumber,
-            //     pageSize: pageSize,
-            //     totalCount: totalCount,
-            //     items: users,
-            // });
+            res.status(HttpStatus.OK).json({
+                pagesCount: Math.ceil(totalCount / pageSize),
+                page: pageNumber,
+                pageSize: pageSize,
+                totalCount: totalCount,
+                items: users,
+            });
         } catch (error) {
-            if (error instanceof Error) throw new Error(error.message);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
         }
     }
-
-    // @Get(":id")
-    // findOne(@Param("id") id: string) {
-    //     return this.usersService.findOne(+id);
-    // }
-    //
-    // @Patch(":id")
-    // update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    //     return this.usersService.update(+id, updateUserDto);
-    // }
 
     @Delete(":id")
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
-            return await this.usersService.delete(id);
+            await this.usersService.delete(id);
+
+            res.sendStatus(204);
         } catch (error) {
             if (error instanceof Error) {
-                res.sendStatus(404);
+                res.sendStatus(HttpStatus.NOT_FOUND);
                 console.log(error.message);
             }
         }

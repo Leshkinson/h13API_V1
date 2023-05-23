@@ -6,9 +6,10 @@ import { PostsModule } from "./posts/posts.module";
 import { UsersModule } from "./users/users.module";
 import {DatabaseModule} from "./database/database.module";
 import { CommentsModule } from './comments/comments.module';
+import { SessionsModule } from './sessions/sessions.module';
 
 @Module({
-    imports: [BlogsModule, PostsModule, UsersModule, DatabaseModule, CommentsModule],
+    imports: [BlogsModule, PostsModule, UsersModule, DatabaseModule, CommentsModule, SessionsModule],
     controllers: [AppController],
     providers: [AppService],
 })

@@ -3,12 +3,12 @@ import { BlogsService } from "./blogs.service";
 import { blogsProviders } from "./blogs.providers";
 import { BlogsController } from "./blogs.controller";
 import { BlogsRepository } from "./blogs.repository";
+import { postsProviders } from "../posts/posts.providers";
+import { PostsRepository } from "../posts/posts.repository";
 import { DatabaseModule } from "../database/database.module";
 import { QueryService } from "../sup-services/query/query.service";
 import { likesProviders } from "../sup-services/query/like.providers";
 import { LikesRepository } from "../sup-services/query/like.repository";
-import { PostsRepository } from "../posts/posts.repository";
-import { postsProviders } from "../posts/posts.providers";
 
 @Module({
     imports: [DatabaseModule],

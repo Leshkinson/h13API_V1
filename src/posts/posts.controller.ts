@@ -7,6 +7,7 @@ import { IPost } from "./interface/post.interface";
 import { PostsRequest } from "./types/post.types";
 import { RefType } from "mongoose";
 import { QueryService } from "../sup-services/query/query.service";
+import { TAG_REPOSITORY } from "../const/const";
 
 @Controller("posts")
 export class PostsController {
@@ -15,7 +16,10 @@ export class PostsController {
     @Post()
     public async create(@Body() createPostDto: CreatePostDto, @Res() res: Response) {
         try {
-            return this.postsService.create(createPostDto);
+            const newPost: IPost | undefined = await this.postsService.create(createPostDto);
+            if (newPost) {
+                res.status(HttpStatus.CREATED).json(newPost);
+            }
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
@@ -41,7 +45,7 @@ export class PostsController {
                     page: pageNumber,
                     pageSize: pageSize,
                     totalCount: totalCount,
-                    items: await this.queryService.getUpgradePosts(posts, token),
+                    items: await this.queryService.getUpgradePosts(posts, token, TAG_REPOSITORY.PostsRepository),
                 });
             }
         } catch (error) {
@@ -53,18 +57,54 @@ export class PostsController {
     }
 
     @Get(":id")
-    public async findOne(@Param("id") id: string) {
-        return this.postsService.findOne(+id);
+    public async getOne(@Param("id") id: string, @Res() res: Response) {
+        try {
+            //const token = req.headers.authorization?.split(" ")[1];
+            const findPost: IPost | undefined = await this.postsService.findOne(id);
+            if (findPost) {
+                const newFindPost = await this.queryService.getUpgradePosts(
+                    findPost,
+                    token,
+                    TAG_REPOSITORY.PostsRepository,
+                );
+
+                res.status(HttpStatus.OK).json(newFindPost);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                res.sendStatus(HttpStatus.NOT_FOUND);
+                console.log(error.message);
+            }
+        }
     }
 
     @Put(":id")
-    public async update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
-        return this.postsService.update(+id, updatePostDto);
+    public async update(@Param("id") id: string, @Res() res: Response, @Body() updatePostDto: UpdatePostDto) {
+        try {
+            const updatePost: IPost | undefined = await this.postsService.update(id, updatePostDto);
+            if (updatePost) {
+                res.sendStatus(HttpStatus.NO_CONTENT);
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                res.sendStatus(HttpStatus.NOT_FOUND);
+                console.log(error.message);
+            }
+        }
     }
 
     @Delete(":id")
-    public async delete(@Param("id") id: string) {
-        return this.postsService.delete(id);
+    public async delete(@Param("id") id: RefType, @Res() res: Response) {
+        try {
+            await this.postsService.delete(id);
+
+            res.sendStatus(HttpStatus.NO_CONTENT);
+        } catch (error) {
+            if (error instanceof Error) {
+                res.sendStatus(HttpStatus.NOT_FOUND);
+                console.log(error.message);
+            }
+        }
     }
 
     //@Delete

@@ -13,8 +13,9 @@ import { UserModel } from "../../users/schema/user.schema";
 import { IUser } from "../../users/interface/user.interface";
 import { LikesStatusCfgValues } from "./types/like.type";
 import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
-import { LIKE_STATUS } from "../../const/const";
+import { LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
 import { CommentsRepository } from "../../comments/comments.repository";
+import { IComment } from "../../comments/interface/comment.interface";
 
 @Injectable()
 export class QueryService {
@@ -72,26 +73,35 @@ export class QueryService {
         throw new Error();
     }
 
+    public async getTotalCountForUsers(
+        searchLoginTerm: string | undefined | object,
+        searchEmailTerm: string | undefined | object,
+    ): Promise<number> {
+        if (searchLoginTerm) searchLoginTerm = { login: { $regex: new RegExp(`.*${searchLoginTerm}.*`, "i") } };
+        if (searchEmailTerm) searchEmailTerm = { email: { $regex: new RegExp(`.*${searchEmailTerm}.*`, "i") } };
+
+        return await this.userRepository.getUsersCount(searchLoginTerm, searchEmailTerm);
+    }
+
     public async getUpgradePosts(
         posts: IPost[] | IPost,
         token: string | undefined,
+        tag: TagRepositoryTypeCfgValues,
     ): Promise<IPost[] | IPost | undefined> {
-        // const userService = new UserService();
-        // const tokenService = new TokenService();
         if (token) {
             //const payload = await tokenService.getPayloadByAccessToken(token) as JWT;
             const user = await this.userRepository.find(payload.id);
 
-            return await this.changerPosts(posts, user, this.postRepository);
+            return await this.changerPosts(posts, user, tag);
         }
 
-        return await this.changerPosts(posts, null, this.postRepository);
+        return await this.changerPosts(posts, null, tag);
     }
 
     public async changerPosts(
         entityPost: IPost[] | IPost,
         user: IUser | null,
-        postRepository: PostsRepository,
+        tag: TagRepositoryTypeCfgValues,
     ): Promise<IPost[] | IPost | undefined> {
         if (Array.isArray(entityPost)) {
             if (user) {
@@ -101,14 +111,14 @@ export class QueryService {
                             String(user._id),
                             String(post._id),
                         )) as LikesStatusCfgValues;
-                        return await this.postMapper(myStatus, post, postRepository);
+                        return await this.postMapper(myStatus, post, tag);
                     }),
                 );
             }
 
             return await Promise.all(
                 entityPost.map(async (post: IPost): Promise<IPost> => {
-                    return await this.postMapper(null, post, postRepository);
+                    return await this.postMapper(null, post, tag);
                 }),
             );
         }
@@ -118,16 +128,16 @@ export class QueryService {
                 String(entityPost._id),
             )) as LikesStatusCfgValues;
 
-            return await this.postMapper(myStatus, entityPost, postRepository);
+            return await this.postMapper(myStatus, entityPost, tag);
         }
 
-        return await this.postMapper(null, entityPost, postRepository);
+        return await this.postMapper(null, entityPost, tag);
     }
 
     public async postMapper(
         myStatus: LikesStatusCfgValues | null,
         post: IPost,
-        postRepository: PostsRepository,
+        tag: TagRepositoryTypeCfgValues,
     ): Promise<IPost> {
         if (myStatus) {
             post.extendedLikesInfo.myStatus = myStatus;
@@ -136,12 +146,12 @@ export class QueryService {
         post.extendedLikesInfo.likesCount = await this.getTotalCountLikeOrDislike(
             String(post._id),
             LIKE_STATUS.LIKE,
-            postRepository,
+            tag,
         );
         post.extendedLikesInfo.dislikesCount = await this.getTotalCountLikeOrDislike(
             String(post._id),
             LIKE_STATUS.DISLIKE,
-            postRepository,
+            tag,
         );
         post.extendedLikesInfo.newestLikes = (await this.getUpgradeLikes(likes)) as UpgradeLikes[];
 
@@ -151,9 +161,16 @@ export class QueryService {
     public async getTotalCountLikeOrDislike(
         id: string,
         param: string,
-        repository: CommentsRepository | PostsRepository,
+        //repository: CommentsRepository | PostsRepository,
+        tag: TagRepositoryTypeCfgValues,
     ) {
-        const commentOrPost = await repository.find(id);
+        let commentOrPost: IPost | IComment;
+        if (tag === "PostsRepository") {
+            commentOrPost = await this.postRepository.find(id);
+        }
+        if (tag === "CommentsRepository") {
+            commentOrPost = await this.commentRepository.find(id);
+        }
         if (commentOrPost) {
             return await this.likeRepository.countingLikeOrDislike(String(commentOrPost._id), param);
         }
@@ -186,5 +203,51 @@ export class QueryService {
 
     public async getLikes(id: string): Promise<ILikeStatus[] | ILikeStatusWithoutId[] | null> {
         return await this.likeRepository.findLikes(id);
+    }
+
+    public async setUpLikeOrDislikeStatus(
+        token: string,
+        commentOrPostId: string,
+        likeStatus: string,
+        tag: TagRepositoryTypeCfgValues,
+    ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
+        const payload = (await tokenService.getPayloadByAccessToken(token)) as JWT;
+        const user = await this.userRepository.find(payload.id);
+        let commentOrPost: IPost | IComment | undefined;
+        if (tag === "PostsRepository") {
+            commentOrPost = await this.postRepository.find(commentOrPostId);
+        }
+        if (tag === "CommentsRepository") {
+            commentOrPost = await this.commentRepository.find(commentOrPostId);
+        }
+        if (!user || !commentOrPost) {
+            throw new Error();
+        }
+        return await this.makeLikeStatusForTheComment(likeStatus, commentOrPostId, String(user._id));
+    }
+
+    public async makeLikeStatusForTheComment(
+        likeStatus: string,
+        commentOrPostId: string,
+        userId: string,
+    ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
+        const like = (await this.likeRepository.findLike(userId, commentOrPostId)) as ILikeStatus;
+        if (like) {
+            return await this.changeLikeStatusForTheComment(String(like._id), likeStatus);
+        }
+
+        return await this.likeRepository.createLike(commentOrPostId, userId, likeStatus);
+    }
+
+    public async changeLikeStatusForTheComment(
+        likeId: string,
+        likeStatus: string,
+    ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
+        const like = await this.likeRepository.findLikeById(likeId);
+        if (like?.likeStatus !== likeStatus) {
+            return await this.likeRepository.updateLikeStatus(likeId, likeStatus);
+        }
+
+        return like;
     }
 }
