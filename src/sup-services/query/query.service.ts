@@ -13,13 +13,15 @@ import { UserModel } from "../../users/schema/user.schema";
 import { IUser } from "../../users/interface/user.interface";
 import { LikesStatusCfgValues } from "./types/like.type";
 import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
-import { LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
+import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
 import { CommentsRepository } from "../../comments/comments.repository";
 import { IComment } from "../../comments/interface/comment.interface";
+import { AuthService } from "../../auth/auth.service";
 
 @Injectable()
 export class QueryService {
     constructor(
+        private readonly authService: AuthService,
         @Inject("postRepository") private readonly postRepository: PostsRepository,
         @Inject("blogRepository") private readonly blogRepository: BlogsRepository,
         @Inject("likeRepository") private readonly likeRepository: LikesRepository,
@@ -89,7 +91,7 @@ export class QueryService {
         tag: TagRepositoryTypeCfgValues,
     ): Promise<IPost[] | IPost | undefined> {
         if (token) {
-            //const payload = await tokenService.getPayloadByAccessToken(token) as JWT;
+            const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
             const user = await this.userRepository.find(payload.id);
 
             return await this.changerPosts(posts, user, tag);
@@ -211,7 +213,7 @@ export class QueryService {
         likeStatus: string,
         tag: TagRepositoryTypeCfgValues,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
-        const payload = (await tokenService.getPayloadByAccessToken(token)) as JWT;
+        const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
         const user = await this.userRepository.find(payload.id);
         let commentOrPost: IPost | IComment | undefined;
         if (tag === "PostsRepository") {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Delete, Res, Req, HttpStatus } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { Request, Response } from "express";
@@ -26,6 +26,7 @@ export class UsersController {
     @Get()
     public async getAllUsers(@Req() req: Request, @Res() res: Response) {
         try {
+            // eslint-disable-next-line prefer-const
             let { sortBy, sortDirection, pageNumber, pageSize, searchLoginTerm, searchEmailTerm } =
                 req.query as UsersRequest;
             pageNumber = Number(pageNumber ?? 1);
@@ -60,7 +61,7 @@ export class UsersController {
         try {
             await this.usersService.delete(id);
 
-            res.sendStatus(204);
+            res.sendStatus(HttpStatus.NO_CONTENT);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);

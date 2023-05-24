@@ -5,11 +5,22 @@ import { RefType, SortOrder } from "mongoose";
 import { IUser } from "./interface/user.interface";
 import { UserModel } from "./schema/user.schema";
 import * as bcrypt from "bcrypt";
-import { uuidv4 } from "uuidv4";
+import { uuid } from "uuidv4";
+import { JwtPayload } from "jsonwebtoken";
+import { IAuth } from "../auth/interface/auth.interface";
+import { RegistrationDto } from "../auth/dto/auth.dto";
+import { MailService } from "../sup-services/application/mailer/mail.service";
+import {
+    passwordConfirmedTemplate,
+    userInvitationTemplate,
+} from "../sup-services/application/mailer/templates/templates";
 
 @Injectable()
 export class UsersService {
-    constructor(@Inject("userRepository") private readonly userRepository: UsersRepository) {
+    constructor(
+        private readonly mailService: MailService,
+        @Inject("userRepository") private readonly userRepository: UsersRepository,
+    ) {
         this.userRepository = new UsersRepository(UserModel);
     }
 
@@ -48,13 +59,18 @@ export class UsersService {
         return await this.userRepository.find(id);
     }
 
-    public async createByRegistration(login: string, password: string, email: string): Promise<IUser | null> {
-        const hashPassword = await bcrypt.hash(password, 5);
-        const code = uuidv4();
-        const user = await this.userRepository.createUserByRegistration(login, hashPassword, email, code);
+    public async createByRegistration(registrationDto: RegistrationDto): Promise<IUser | null> {
+        const hashPassword = await bcrypt.hash(registrationDto.password, 5);
+        const code = uuid();
+        const user = await this.userRepository.createUserByRegistration(
+            registrationDto.login,
+            hashPassword,
+            registrationDto.email,
+            code,
+        );
         try {
-            const mailService = new MailService();
-            await mailService.sendConfirmMessage(email, code, userInvitationTemplate);
+            // const mailService = new MailService();
+            await this.mailService.sendConfirmMessage(registrationDto.email, code, userInvitationTemplate);
         } catch (error) {
             if (error instanceof Error) {
                 await this.userRepository.delete(user._id.toString());
@@ -85,29 +101,27 @@ export class UsersService {
     }
 
     public async resendConfirmByUser(email: string): Promise<void> {
-        const mailService = new MailService();
         const user = await this.getUserByParam(email);
         if (user) {
-            const code = uuidv4();
+            const code = uuid();
             await this.userRepository.updateUserByCode(user._id.toString(), code);
-            await mailService.sendConfirmMessage(email, code, userInvitationTemplate);
+            await this.mailService.sendConfirmMessage(email, code, userInvitationTemplate);
         }
     }
 
     public async requestByRecovery(email: string) {
-        const mailService = new MailService();
         const user = await this.getUserByParam(email);
         if (user && user.isConfirmed) {
-            const recoveryCode = uuidv4();
+            const recoveryCode = uuid();
             await this.userRepository.updateUserByCode(user._id.toString(), recoveryCode);
-            await mailService.sendConfirmMessage(email, recoveryCode, passwordConfirmedTemplate);
+            await this.mailService.sendConfirmMessage(email, recoveryCode, passwordConfirmedTemplate);
         }
     }
 
-    public async verifyUser(loginOrEmail: string, password: string): Promise<IUser> {
-        const consideredUser = await this.getUserByParam(loginOrEmail);
+    public async verifyUser(authDto: IAuth): Promise<IUser> {
+        const consideredUser = await this.getUserByParam(authDto.loginOrEmail);
         if (!consideredUser) throw new Error();
-        if (await bcrypt.compare(password, consideredUser.password)) return consideredUser;
+        if (await bcrypt.compare(authDto.password, consideredUser.password)) return consideredUser;
 
         throw new Error();
     }

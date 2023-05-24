@@ -29,6 +29,7 @@ export class BlogsController {
     @Get()
     public async findAllBlogs(@Req() req: Request, @Res() res: Response) {
         try {
+            // eslint-disable-next-line prefer-const
             let { pageNumber, pageSize, sortBy, searchNameTerm, sortDirection } = req.query as BlogsRequest;
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);
@@ -60,6 +61,7 @@ export class BlogsController {
     public async findOne(@Param("id") id: string, @Res() res: Response) {
         try {
             const findBlog: IBlog | undefined = await this.blogsService.findOne(id);
+
             res.status(HttpStatus.OK).json(findBlog);
         } catch (error) {
             if (error instanceof Error) {
@@ -73,7 +75,9 @@ export class BlogsController {
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         try {
             const updateBlog = await this.blogsService.update(+id, updateBlogDto);
-            if (updateBlog) res.sendStatus(HttpStatus.NO_CONTENT);
+            if (updateBlog) {
+                res.sendStatus(HttpStatus.NO_CONTENT);
+            }
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
@@ -86,6 +90,7 @@ export class BlogsController {
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.blogsService.delete(id);
+
             res.sendStatus(HttpStatus.NO_CONTENT);
         } catch (error) {
             if (error instanceof Error) {
@@ -98,6 +103,8 @@ export class BlogsController {
     @Get()
     public async getAllPostForTheBlog(@Param("blogId") blogId: string, @Req() req: Request, @Res() res: Response) {
         try {
+            const token = req.headers.authorization?.split(" ")[1];
+            // eslint-disable-next-line prefer-const
             let { pageNumber, pageSize, sortDirection, sortBy } = req.query as BlogsRequestWithoutSNT;
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);

@@ -1,25 +1,31 @@
-import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus } from "@nestjs/common";
+import { Response, Request } from "express";
+import { AuthService } from "../auth/auth.service";
 import { CommentsService } from "./comments.service";
-import { UpdateCommentDto } from "./dto/update-comment.dto";
-import { Response } from "express";
-import { IComment } from "./interface/comment.interface";
-import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
-import { QueryService } from "../sup-services/query/query.service";
-import { LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { UsersService } from "../users/users.service";
+import { IComment } from "./interface/comment.interface";
+//import { UpdateCommentDto } from "./dto/update-comment.dto";
+import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
+import { QueryService } from "../sup-services/query/query.service";
+import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
+import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req } from "@nestjs/common";
 
 @Controller("comments")
 export class CommentsController {
-    constructor(private readonly commentsService: CommentsService, private readonly queryService: QueryService, private readonly usersService: UsersService) {}
+    constructor(
+        private readonly commentsService: CommentsService,
+        private readonly queryService: QueryService,
+        private readonly usersService: UsersService,
+        private readonly authService: AuthService,
+    ) {}
 
     @Get(":id")
-    async findOne(@Param("id") id: string, @Res() res: Response) {
+    async findOne(@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
             const findComment: IComment | undefined = await this.commentsService.getOne(id);
             if (findComment) {
                 if (token) {
-                    const payload = (await tokenService.getPayloadByAccessToken(token)) as JWT;
+                    const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
                     const user = await this.usersService.getUserById(payload.id);
                     if (user) {
                         findComment.likesInfo.likesCount = await this.queryService.getTotalCountLikeOrDislike(
@@ -37,7 +43,7 @@ export class CommentsController {
                             String(findComment._id),
                         )) as LikesStatusCfgValues;
                         if (myStatus) findComment.likesInfo.myStatus = myStatus;
-                        res.status(200).json(findComment);
+                        res.status(HttpStatus.OK).json(findComment);
 
                         return;
                     }
@@ -52,11 +58,11 @@ export class CommentsController {
                     LIKE_STATUS.DISLIKE,
                     TAG_REPOSITORY.CommentsRepository,
                 );
-                res.status(200).json(findComment);
+                res.status(HttpStatus.OK).json(findComment);
             }
         } catch (error) {
             if (error instanceof Error) {
-                res.sendStatus(404);
+                res.sendStatus(HttpStatus.NOT_FOUND);
                 console.log(error.message);
             }
         }
@@ -65,50 +71,53 @@ export class CommentsController {
     @Put(":id")
     async update(
         @Param("commentId") commentId: string,
+        @Req() req: Request,
         @Res() res: Response,
-        @Body() updateCommentDto: UpdateCommentDto,
+        @Body() content: string,
     ) {
         try {
+            const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (token) {
-                const payload = (await tokenService.getPayloadByAccessToken(token)) as JWT;
+                const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
                 const user = await this.usersService.getUserById(payload.id);
                 const comment: IComment | undefined = await this.commentsService.getOne(commentId);
                 if (!user || !comment) {
-                    res.sendStatus(404);
+                    res.sendStatus(HttpStatus.NOT_FOUND);
 
                     return;
                 }
                 if (comment?.commentatorInfo.userLogin !== user?.login) {
-                    res.sendStatus(403);
+                    res.sendStatus(HttpStatus.FORBIDDEN);
 
                     return;
                 }
                 if (comment?.commentatorInfo.userId !== user?._id.toString()) {
-                    res.sendStatus(403);
+                    res.sendStatus(HttpStatus.FORBIDDEN);
 
                     return;
                 }
                 const updatedComment: IComment | undefined = await this.commentsService.update(commentId, content);
 
-                if (updatedComment) res.sendStatus(204);
+                if (updatedComment) res.sendStatus(HttpStatus.NO_CONTENT);
             }
         } catch (error) {
             if (error instanceof Error) {
-                res.sendStatus(404);
+                res.sendStatus(HttpStatus.NOT_FOUND);
                 console.log(error.message);
             }
         }
     }
 
     @Delete(":id")
-    async delete(@Param("id") id: string, @Res() res: Response) {
+    async delete(@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
         try {
+            const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (token) {
-                const payload = (await tokenService.getPayloadByAccessToken(token)) as JWT;
+                const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
                 const user = await this.usersService.getUserById(payload.id);
 
                 if (!user) {
-                    res.sendStatus(404);
+                    res.sendStatus(HttpStatus.NOT_FOUND);
 
                     return;
                 }
@@ -116,18 +125,18 @@ export class CommentsController {
                 const comment: IComment | undefined = await this.commentsService.getOne(id);
 
                 if (!comment) {
-                    res.sendStatus(404);
+                    res.sendStatus(HttpStatus.NOT_FOUND);
 
                     return;
                 }
                 if (comment?.commentatorInfo.userLogin !== user?.login) {
-                    res.sendStatus(403);
+                    res.sendStatus(HttpStatus.FORBIDDEN);
 
                     return;
                 }
 
                 if (comment?.commentatorInfo.userId !== user?._id.toString()) {
-                    res.sendStatus(403);
+                    res.sendStatus(HttpStatus.FORBIDDEN);
 
                     return;
                 }
@@ -147,15 +156,21 @@ export class CommentsController {
     @Put()
     async sendLikeOrDislikeStatus(
         @Param("commentId") commentId: string,
+        @Req() req: Request,
         @Res() res: Response,
         @Body() likeStatus: string,
     ) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
             if (token) {
-                await this.queryService.setUpLikeOrDislikeStatus(token, commentId, likeStatus, TAG_REPOSITORY.CommentsRepository);
+                await this.queryService.setUpLikeOrDislikeStatus(
+                    token,
+                    commentId,
+                    likeStatus,
+                    TAG_REPOSITORY.CommentsRepository,
+                );
 
-                res.sendStatus(204);
+                res.sendStatus(HttpStatus.NO_CONTENT);
             }
         } catch (error) {
             if (error instanceof Error) {

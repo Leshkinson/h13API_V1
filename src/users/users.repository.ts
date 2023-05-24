@@ -2,6 +2,7 @@ import { IUser } from "./interface/user.interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { Model, RefType, SortOrder } from "mongoose";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { JwtPayload } from "jsonwebtoken";
 
 @Injectable()
 export class UsersRepository {

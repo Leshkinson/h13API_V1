@@ -1,19 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
 import { SessionsService } from "./sessions.service";
-import { CreateSessionDto } from "./dto/create-session.dto";
-import { UpdateSessionDto } from "./dto/update-session.dto";
 import { Request, Response } from "express";
 import { UsersService } from "../users/users.service";
+import { AuthService } from "../auth/auth.service";
+import { JWT } from "../const/const";
 
 @Controller("session")
 export class SessionsController {
-    constructor(private readonly sessionsService: SessionsService, private readonly usersService: UsersService) {}
+    constructor(
+        private readonly sessionsService: SessionsService,
+        private readonly usersService: UsersService,
+        private readonly authService: AuthService,
+    ) {}
 
     @Get()
     async getAllDevices(@Req() req: Request, @Res() res: Response) {
         try {
             const { refreshToken } = req.cookies;
-            const payload = await tokenService.getPayloadFromToken(refreshToken);
+            const payload = await this.authService.getPayloadFromToken(refreshToken);
             const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
                 const sessions = await this.sessionsService.getAllSessionByUser(String(user._id));
@@ -32,7 +36,7 @@ export class SessionsController {
         try {
             const { refreshToken } = req.cookies;
 
-            const payload = await tokenService.getPayloadFromToken(refreshToken);
+            const payload = await this.authService.getPayloadFromToken(refreshToken);
             if (!payload) {
                 res.sendStatus(403);
 
@@ -53,10 +57,6 @@ export class SessionsController {
     @Delete(":id")
     async terminateTheDeviceSession(@Param("deviceId") deviceId: string, @Req() req: Request, @Res() res: Response) {
         try {
-            // const userService = new UserService();
-            // const tokenService = new TokenService();
-            // const sessionService = new SessionService();
-
             const { deviceId } = req.params;
             const { refreshToken } = req.cookies;
             if (!refreshToken) {
@@ -64,13 +64,13 @@ export class SessionsController {
 
                 return;
             }
-            const isBlockedToken = await tokenService.checkTokenByBlackList(refreshToken);
+            const isBlockedToken = await this.authService.checkTokenByBlackList(refreshToken);
             if (isBlockedToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
             }
-            const payload = (await tokenService.getPayloadByRefreshToken(refreshToken)) as JWT;
+            const payload = (await this.authService.getPayloadByRefreshToken(refreshToken)) as JWT;
             if (!payload) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 

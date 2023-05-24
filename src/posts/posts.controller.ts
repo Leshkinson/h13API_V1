@@ -32,11 +32,12 @@ export class PostsController {
     public async getAllPosts(@Req() req: Request, @Res() res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
+            // eslint-disable-next-line prefer-const
             let { pageNumber, pageSize, sortBy, sortDirection } = req.query as PostsRequest;
             pageNumber = Number(pageNumber ?? 1);
             pageSize = Number(pageSize ?? 10);
 
-            const posts: IPost[] = await this.postsService.findAllPosts( pageNumber, pageSize, sortBy, sortDirection);
+            const posts: IPost[] = await this.postsService.findAllPosts(pageNumber, pageSize, sortBy, sortDirection);
 
             const totalCount: number = await this.postsService.getTotalCountForPosts();
             if (posts) {
@@ -57,9 +58,9 @@ export class PostsController {
     }
 
     @Get(":id")
-    public async getOne(@Param("id") id: string, @Res() res: Response) {
+    public async getOne(@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
         try {
-            //const token = req.headers.authorization?.split(" ")[1];
+            const token = req.headers.authorization?.split(" ")[1];
             const findPost: IPost | undefined = await this.postsService.findOne(id);
             if (findPost) {
                 const newFindPost = await this.queryService.getUpgradePosts(

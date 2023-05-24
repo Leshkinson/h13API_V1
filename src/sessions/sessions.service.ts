@@ -1,9 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { CreateSessionDto } from "./dto/create-session.dto";
-import { UpdateSessionDto } from "./dto/update-session.dto";
+// import { CreateSessionDto } from "./dto/create-session.dto";
+// import { UpdateSessionDto } from "./dto/update-session.dto";
 import { SessionsRepository } from "./sessions.repository";
 import { ISession } from "./interface/session.interface";
 import { SessionModel } from "./schema/session.schema";
+import { uuid } from "uuidv4";
 
 @Injectable()
 export class SessionsService {
@@ -11,7 +12,7 @@ export class SessionsService {
         this.sessionRepository = new SessionsRepository(SessionModel);
     }
     public async generateSession(ip: string, title: string = "unKnown", userId: string): Promise<ISession> {
-        const deviceId = uuidv4();
+        const deviceId = uuid();
         return this.sessionRepository.createDeviceSession(ip, title, userId, new Date().toISOString(), deviceId);
     }
 
