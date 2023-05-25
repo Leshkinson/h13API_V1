@@ -21,9 +21,10 @@ import { LikesRepository } from "../sup-services/query/like.repository";
 import { UsersService } from "../users/users.service";
 import { MailService } from "../sup-services/application/mailer/mail.service";
 import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
+import { MailModule } from "../sup-services/application/mailer/mail.module";
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule, MailModule],
     controllers: [CommentsController],
     providers: [
         CommentsService,
@@ -33,7 +34,6 @@ import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
         JwtService,
         SessionsService,
         MailService,
-        MailerService,
         {
             provide: "blogRepository",
             useValue: BlogsRepository,

@@ -252,4 +252,49 @@ export class QueryService {
 
         return like;
     }
+    public async createCommentForThePost(postId: RefType, content: string, token: string): Promise<IComment> {
+        const post = await this.postRepository.find(postId);
+        if (post) {
+            const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
+            const user = await this.userRepository.find(payload.id);
+            if (user) {
+                return await this.commentRepository.create(content, postId, payload.id, user.login);
+            }
+        }
+
+        throw new Error();
+    }
+
+    public async getCommentsForThePost(
+        postId: RefType,
+        pageNumber: number = 1,
+        pageSize: number = 10,
+        sortBy: string = "createdAt",
+        sortDirection: SortOrder = "desc",
+    ): Promise<IComment[]> {
+        const post = await this.postRepository.find(postId);
+        const skip: number = (+pageNumber - 1) * +pageSize;
+        if (post) {
+            // return this.commentModel
+            //     .find({ postId: post?._id?.toString() })
+            //     .sort({ [sortBy]: sortDirection })
+            //     .skip(skip)
+            //     .limit(+pageSize);
+
+            return await this.commentRepository.findAllForThePost(
+                post?._id?.toString(),
+                sortBy,
+                sortDirection,
+                skip,
+                +pageSize,
+            );
+        }
+        throw new Error();
+    }
+
+    public async getTotalCountCommentsForThePost(postId: RefType): Promise<number> {
+        const post = await this.postRepository.find(postId);
+
+        return this.commentRepository.getCount(post?._id?.toString());
+    }
 }

@@ -9,7 +9,7 @@ export class UsersRepository {
     constructor(@Inject("USER_MODEL") private readonly userModel: Model<IUser>) {}
 
     public async create(createUserDto: CreateUserDto): Promise<IUser> {
-        return await this.userModel.create({ createUserDto, isConfirmed: true });
+        return await this.userModel.create({ ...createUserDto, isConfirmed: true});
     }
 
     public async findAll(

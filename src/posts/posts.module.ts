@@ -17,16 +17,22 @@ import { CommentsRepository } from "../comments/comments.repository";
 import { SessionsRepository } from "../sessions/sessions.repository";
 import { likesProviders } from "../sup-services/query/like.providers";
 import { LikesRepository } from "../sup-services/query/like.repository";
+import { blogsProviders } from "../blogs/blogs.providers";
+import { UsersService } from "../users/users.service";
+import { MailModule } from "../sup-services/application/mailer/mail.module";
+import { MailService } from "../sup-services/application/mailer/mail.service";
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule, MailModule],
     controllers: [PostsController],
     providers: [
         PostsService,
         QueryService,
         AuthService,
+        UsersService,
         JwtService,
         SessionsService,
+        MailService,
         {
             provide: "postRepository",
             useValue: PostsRepository,
@@ -51,6 +57,7 @@ import { LikesRepository } from "../sup-services/query/like.repository";
             provide: "sessionRepository",
             useValue: SessionsRepository,
         },
+        ...blogsProviders,
         ...postsProviders,
         ...likesProviders,
         ...usersProviders,

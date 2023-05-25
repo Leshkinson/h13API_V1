@@ -69,7 +69,6 @@ export class UsersService {
             code,
         );
         try {
-            // const mailService = new MailService();
             await this.mailService.sendConfirmMessage(registrationDto.email, code, userInvitationTemplate);
         } catch (error) {
             if (error instanceof Error) {

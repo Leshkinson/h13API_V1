@@ -16,7 +16,7 @@ export class AuthController {
         private readonly sessionsService: SessionsService,
     ) {}
 
-    @Post()
+    @Post("login")
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
             const user = await this.usersService.verifyUser(authDto);

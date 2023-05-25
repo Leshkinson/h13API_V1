@@ -100,7 +100,7 @@ export class BlogsController {
         }
     }
 
-    @Get()
+    @Get(":blogId/posts")
     public async getAllPostForTheBlog(@Param("blogId") blogId: string, @Req() req: Request, @Res() res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
@@ -134,7 +134,7 @@ export class BlogsController {
         }
     }
 
-    @Post()
+    @Post(":blogId/posts")
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
         @Body() createPostDtoWithoutIdAndName: ICreatePostDtoWithoutIdAndName,

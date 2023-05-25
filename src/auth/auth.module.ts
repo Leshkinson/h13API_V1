@@ -13,9 +13,10 @@ import { sessionsProviders } from "../sessions/sessions.providers";
 import { DatabaseModule } from "../database/database.module";
 import { MailService } from "../sup-services/application/mailer/mail.service";
 import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
+import { MailModule } from "../sup-services/application/mailer/mail.module";
 
 @Module({
-    imports: [DatabaseModule, JwtModule.register({})],
+    imports: [DatabaseModule, MailModule, JwtModule.register({})],
     controllers: [AuthController],
     providers: [
         AuthService,
@@ -24,7 +25,6 @@ import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
         AccessTokenStrategy,
         RefreshTokenStrategy,
         MailService,
-        MailerService,
         {
             provide: "userRepository",
             useValue: UsersRepository,
