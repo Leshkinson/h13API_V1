@@ -5,7 +5,7 @@ import { UsersService } from "../users/users.service";
 import { AuthService } from "../auth/auth.service";
 import { JWT } from "../const/const";
 
-@Controller("session")
+@Controller("security")
 export class SessionsController {
     constructor(
         private readonly sessionsService: SessionsService,
@@ -13,7 +13,7 @@ export class SessionsController {
         private readonly authService: AuthService,
     ) {}
 
-    @Get()
+    @Get("devices")
     async getAllDevices(@Req() req: Request, @Res() res: Response) {
         try {
             const { refreshToken } = req.cookies;
@@ -31,7 +31,7 @@ export class SessionsController {
         }
     }
 
-    @Delete(":id")
+    @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
             const { refreshToken } = req.cookies;
@@ -54,7 +54,7 @@ export class SessionsController {
             }
         }
     }
-    @Delete(":id")
+    @Delete("devices/:deviceId")
     async terminateTheDeviceSession(@Param("deviceId") deviceId: string, @Req() req: Request, @Res() res: Response) {
         try {
             const { deviceId } = req.params;

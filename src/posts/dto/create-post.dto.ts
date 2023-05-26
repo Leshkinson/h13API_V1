@@ -1,8 +1,20 @@
 import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
 export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAndName {
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(30)
     readonly title: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(100)
     readonly shortDescription: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(1000)
     readonly content: string;
 
     constructor(props: ICreatePostDtoWithoutIdAndName) {
@@ -13,12 +25,12 @@ export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAnd
 }
 
 export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
+    @IsString()
+    @IsNotEmpty()
     readonly blogId: string;
-    readonly blogName: string;
 
-    constructor(props: ICreatePostDtoWithoutIdAndName, blogId: string, blogName: string) {
+    constructor(props: ICreatePostDtoWithoutIdAndName, blogId: string) {
         super(props);
         this.blogId = blogId;
-        this.blogName = blogName;
     }
 }

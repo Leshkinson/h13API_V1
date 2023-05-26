@@ -48,7 +48,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("logout")
     public async logout(@Req() req: Request, @Res() res: Response) {
         try {
             const { refreshToken } = req.cookies;
@@ -68,7 +68,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
             const { refreshToken } = req.cookies;
@@ -99,9 +99,6 @@ export class AuthController {
     @Get("me")
     public async me(@Req() req: Request, @Res() res: Response) {
         try {
-            // const tokenService = new TokenService();
-            // const userService = new UserService();
-
             const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (token) {
                 const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
@@ -120,7 +117,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("registration")
     public async registration(@Body() registrationDto: RegistrationDto, @Req() req: Request, @Res() res: Response) {
         try {
             await this.usersService.createByRegistration(registrationDto);
@@ -134,7 +131,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("registration-confirmation")
     public async confirmEmail(@Body() code: string, @Res() res: Response) {
         try {
             const confirmed = await this.usersService.confirmUser(code);
@@ -149,7 +146,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("registration-email-resending")
     public async resendConfirm(@Body() email: string, @Res() res: Response) {
         try {
             await this.usersService.resendConfirmByUser(email);
@@ -163,7 +160,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("password-recovery")
     public async recoveryPassword(@Body() email: string, @Res() res: Response) {
         try {
             await this.usersService.requestByRecovery(email);
@@ -177,7 +174,7 @@ export class AuthController {
         }
     }
 
-    @Post()
+    @Post("new-password")
     public async setupNewPassword(@Body() newPassword: string, recoveryCode: string, @Res() res: Response) {
         try {
             await this.usersService.confirmNewPassword(newPassword, recoveryCode);

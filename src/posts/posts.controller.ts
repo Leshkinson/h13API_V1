@@ -120,7 +120,7 @@ export class PostsController {
 
     //@Delete
 
-    @Post()
+    @Post(":postId/comments")
     public async createCommentThePost(
         @Param("postId") postId: string,
         @Body() content: string,
@@ -147,7 +147,7 @@ export class PostsController {
             }
         }
     }
-    @Get(":id")
+    @Get(":postId/comments")
     public async getAllCommentsForThePost(@Param("postId") postId: string, @Req() req: Request, @Res() res: Response) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
@@ -228,11 +228,14 @@ export class PostsController {
             }
         }
     }
-    @Post()
-    public async sendLikeOrDislikeStatus(req: Request, res: Response) {
+    @Put(":postId/like-status")
+    public async sendLikeOrDislikeStatus(
+        @Param("postId") postId: string,
+        @Body() likeStatus: string,
+        @Req() req: Request,
+        @Res() res: Response,
+    ) {
         try {
-            const { postId } = req.params;
-            const { likeStatus } = req.body;
             const token = req.headers.authorization?.split(" ")[1];
             if (token) {
                 await this.queryService.setUpLikeOrDislikeStatus(

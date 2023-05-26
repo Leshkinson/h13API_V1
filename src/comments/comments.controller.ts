@@ -68,7 +68,7 @@ export class CommentsController {
         }
     }
 
-    @Put(":id")
+    @Put(":commentId")
     async update(
         @Param("commentId") commentId: string,
         @Req() req: Request,
@@ -108,8 +108,8 @@ export class CommentsController {
         }
     }
 
-    @Delete(":id")
-    async delete(@Param("id") id: string, @Req() req: Request, @Res() res: Response) {
+    @Delete(":commentId")
+    async delete(@Param("commentId") id: string, @Req() req: Request, @Res() res: Response) {
         try {
             const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (token) {
@@ -153,7 +153,7 @@ export class CommentsController {
         }
     }
 
-    @Put()
+    @Put(":commentId/like-status")
     async sendLikeOrDislikeStatus(
         @Param("commentId") commentId: string,
         @Req() req: Request,

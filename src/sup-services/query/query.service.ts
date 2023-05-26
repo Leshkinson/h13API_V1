@@ -47,7 +47,7 @@ export class QueryService {
         const blog = await this.blogRepository.find(blogId);
         if (blog) {
             //const blogId = new mongoose.Types.ObjectId((blog?._id).toString());
-            const createPostDto = new CreatePostDto(createPostDtoWithoutIdAndName, blogId, blog?.name);
+            const createPostDto = new CreatePostDto(createPostDtoWithoutIdAndName, blogId);
             return await this.postRepository.create(createPostDto);
         }
         throw new Error();
