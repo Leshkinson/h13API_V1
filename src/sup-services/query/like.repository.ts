@@ -1,6 +1,7 @@
 import { Model, RefType } from "mongoose";
 import { Inject, Injectable } from "@nestjs/common";
 import { ILikeStatus, ILikeStatusWithoutId } from "./interface/like.interface";
+import { LikesStatusType } from "./types/like.type";
 
 @Injectable()
 export class LikesRepository {
@@ -9,12 +10,15 @@ export class LikesRepository {
     public async createLike(
         commentOrPostId: string,
         userId: string,
-        likeStatus: string,
+        likeStatus: LikesStatusType,
     ): Promise<ILikeStatus | ILikeStatusWithoutId> {
         return this.likeModel.create({ userId, likeStatus, commentOrPostId });
     }
 
-    public async updateLikeStatus(id: RefType, likeStatus: string): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
+    public async updateLikeStatus(
+        id: RefType,
+        likeStatus: LikesStatusType,
+    ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
         return this.likeModel.findOneAndUpdate({ _id: id }, { likeStatus: likeStatus });
     }
 

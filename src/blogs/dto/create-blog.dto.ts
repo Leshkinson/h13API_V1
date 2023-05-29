@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString, Matches, MaxLength } from "class-validator";
-export class CreateBlogDto {
+import { IBlog, ICreateBlogDto } from "../interface/blog.interface";
+export class CreateBlogDto implements ICreateBlogDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(15)
@@ -16,9 +17,9 @@ export class CreateBlogDto {
     @Matches("/^https://([a-zA-Z0-9_-]+.)+[a-zA-Z0-9_-]+(/[a-zA-Z0-9_-]+)*/?$/")
     readonly websiteUrl: string;
 
-    constructor(name: string, description: string, websiteUrl: string) {
-        this.name = name;
-        this.description = description;
-        this.websiteUrl = websiteUrl;
+    constructor(props: ICreateBlogDto) {
+        this.name = props.name;
+        this.description = props.description;
+        this.websiteUrl = props.websiteUrl;
     }
 }

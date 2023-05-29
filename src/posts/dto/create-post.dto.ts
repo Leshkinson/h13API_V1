@@ -1,5 +1,6 @@
 import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { IsBlogIdCheck } from "../../pipes/validation.pipes";
 
 export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAndName {
     @IsString()
@@ -27,6 +28,7 @@ export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAnd
 export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
     @IsString()
     @IsNotEmpty()
+    @IsBlogIdCheck({ message: "BlogId has incorrect value. (BlogId not found)" })
     readonly blogId: string;
 
     constructor(props: ICreatePostDtoWithoutIdAndName, blogId: string) {

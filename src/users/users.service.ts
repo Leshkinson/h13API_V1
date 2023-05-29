@@ -8,7 +8,7 @@ import * as bcrypt from "bcrypt";
 import { uuid } from "uuidv4";
 import { JwtPayload } from "jsonwebtoken";
 import { IAuth } from "../auth/interface/auth.interface";
-import { RegistrationDto } from "../auth/dto/auth.dto";
+import { EmailDto, NewPasswordDto, RegistrationDto } from "../auth/dto/auth.dto";
 import { MailService } from "../sup-services/application/mailer/mail.service";
 import {
     passwordConfirmedTemplate,
@@ -92,19 +92,19 @@ export class UsersService {
         return false;
     }
 
-    public async confirmNewPassword(newPassword: string, recoveryCode: string): Promise<boolean | null | IUser> {
-        const hashNewPassword = await bcrypt.hash(newPassword, 5);
-        const user = await this.getUserByParam(recoveryCode);
+    public async confirmNewPassword(newPasswordDto: NewPasswordDto): Promise<boolean | null | IUser> {
+        const hashNewPassword = await bcrypt.hash(newPasswordDto.newPassword, 5);
+        const user = await this.getUserByParam(newPasswordDto.recoveryCode);
         if (!user) return false;
         return await this.userRepository.updateUserByNewPassword(user._id.toString(), hashNewPassword);
     }
 
-    public async resendConfirmByUser(email: string): Promise<void> {
-        const user = await this.getUserByParam(email);
+    public async resendConfirmByUser(emailDto: EmailDto): Promise<void> {
+        const user = await this.getUserByParam(emailDto.email);
         if (user) {
             const code = uuid();
             await this.userRepository.updateUserByCode(user._id.toString(), code);
-            await this.mailService.sendConfirmMessage(email, code, userInvitationTemplate);
+            await this.mailService.sendConfirmMessage(emailDto.email, code, userInvitationTemplate);
         }
     }
 

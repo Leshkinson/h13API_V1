@@ -2,20 +2,22 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus }
 import { BlogsService } from "./blogs.service";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
-import { IBlog } from "./interface/blog.interface";
+import { IBlog, ICreateBlogDto } from "./interface/blog.interface";
 import { Request, Response } from "express";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 import { ICreatePostDtoWithoutIdAndName, IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
 import { TAG_REPOSITORY } from "../const/const";
+import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
 
 @Controller("blogs")
 export class BlogsController {
     constructor(private readonly blogsService: BlogsService, private readonly queryService: QueryService) {}
 
     @Post()
-    public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
+    public async create(@Body() createBlogDto: ICreateBlogDto, @Res() res: Response) {
         try {
+            console.log('createBlogDto', createBlogDto);
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
             res.status(HttpStatus.CREATED).json(newBlog);
         } catch (error) {
@@ -137,7 +139,7 @@ export class BlogsController {
     @Post(":blogId/posts")
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
-        @Body() createPostDtoWithoutIdAndName: ICreatePostDtoWithoutIdAndName,
+        @Body() createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
         @Req() req: Request,
         @Res() res: Response,
     ) {

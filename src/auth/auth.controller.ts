@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthDto, RegistrationDto } from "./dto/auth.dto";
+import { AuthDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
 import { Response, Request } from "express";
 import { UsersService } from "../users/users.service";
 import { TokenMapper } from "./dto/mapper/token-mapper";
@@ -147,9 +147,9 @@ export class AuthController {
     }
 
     @Post("registration-email-resending")
-    public async resendConfirm(@Body() email: string, @Res() res: Response) {
+    public async resendConfirm(@Body() emailDto: EmailDto, @Res() res: Response) {
         try {
-            await this.usersService.resendConfirmByUser(email);
+            await this.usersService.resendConfirmByUser(emailDto);
 
             res.sendStatus(HttpStatus.NO_CONTENT);
         } catch (error) {
@@ -161,9 +161,9 @@ export class AuthController {
     }
 
     @Post("password-recovery")
-    public async recoveryPassword(@Body() email: string, @Res() res: Response) {
+    public async recoveryPassword(@Body() emailDto: EmailDto, @Res() res: Response) {
         try {
-            await this.usersService.requestByRecovery(email);
+            await this.usersService.requestByRecovery(emailDto.email);
 
             res.sendStatus(HttpStatus.NO_CONTENT);
         } catch (error) {
@@ -175,9 +175,9 @@ export class AuthController {
     }
 
     @Post("new-password")
-    public async setupNewPassword(@Body() newPassword: string, recoveryCode: string, @Res() res: Response) {
+    public async setupNewPassword(@Body() newPasswordDto: NewPasswordDto, @Res() res: Response) {
         try {
-            await this.usersService.confirmNewPassword(newPassword, recoveryCode);
+            await this.usersService.confirmNewPassword(newPasswordDto);
 
             res.sendStatus(HttpStatus.NO_CONTENT);
         } catch (error) {

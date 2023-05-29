@@ -13,6 +13,8 @@ import { CommentsRequest } from "../comments/types/comment.type";
 import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
 import { UsersService } from "../users/users.service";
 import { AuthService } from "../auth/auth.service";
+import { CreateCommentDto } from "../comments/dto/create-comment.dto";
+import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
 
 @Controller("posts")
 export class PostsController {
@@ -123,17 +125,16 @@ export class PostsController {
     @Post(":postId/comments")
     public async createCommentThePost(
         @Param("postId") postId: string,
-        @Body() content: string,
+        @Body() createCommentDto: CreateCommentDto,
         @Req() req: Request,
         @Res() res: Response,
     ) {
         try {
-            // const queryService = new QueryService();
             const token = req.headers.authorization?.split(" ")[1];
             if (token) {
                 const newComment: IComment | undefined = await this.queryService.createCommentForThePost(
                     postId,
-                    content,
+                    createCommentDto.content,
                     token,
                 );
                 if (newComment) {
@@ -231,7 +232,7 @@ export class PostsController {
     @Put(":postId/like-status")
     public async sendLikeOrDislikeStatus(
         @Param("postId") postId: string,
-        @Body() likeStatus: string,
+        @Body() createLikeStatusDto: CreateLikeStatusDto,
         @Req() req: Request,
         @Res() res: Response,
     ) {
@@ -241,7 +242,7 @@ export class PostsController {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     token,
                     postId,
-                    likeStatus,
+                    createLikeStatusDto.like,
                     TAG_REPOSITORY.PostsRepository,
                 );
                 res.sendStatus(HttpStatus.NO_CONTENT);

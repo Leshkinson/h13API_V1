@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Matches, MaxLength, MinLength, Validate } from "class-validator";
-import { IsLoginExist } from "../../pipes/validation.pipes";
+import { IsExistByParam } from "../../pipes/validation.pipes";
 
 export class CreateUserDto {
     @IsString()
@@ -7,7 +7,7 @@ export class CreateUserDto {
     @MinLength(3)
     @MaxLength(10)
     @Matches("/^[a-zA-Z0-9_-]*$/")
-    @IsLoginExist()
+    @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
     readonly login: string;
 
     @MinLength(6)
@@ -18,6 +18,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     @MaxLength(100)
     @Matches("/^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/")
+    @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
     readonly email: string;
 
     constructor(name: string, description: string, websiteUrl: string) {

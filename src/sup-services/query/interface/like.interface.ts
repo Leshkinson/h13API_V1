@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { LikesStatusCfgValues } from "../types/like.type";
+import { LikesStatusCfgValues, LikesStatusType } from "../types/like.type";
 
 export interface ILikeStatus {
     _id: mongoose.Schema.Types.ObjectId;
@@ -33,4 +33,8 @@ export interface UpgradeLikes {
 export interface UpgradeLikesWithoutLogin {
     addedAt: Date;
     userId: string;
+}
+
+export interface ILike {
+    like: LikesStatusType;
 }

@@ -6,12 +6,12 @@ import { BlogModel } from "../../blogs/schema/blog.schema";
 import { LikesRepository } from "./like.repository";
 import { LikeModel } from "./schema/like.schema";
 import { RefType, SortOrder } from "mongoose";
-import { CreatePostDto } from "../../posts/dto/create-post.dto";
-import { IPost, ICreatePostDtoWithoutIdAndName } from "../../posts/interface/post.interface";
+import { CreatePostDto, CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
+import { IPost } from "../../posts/interface/post.interface";
 import { UsersRepository } from "../../users/users.repository";
 import { UserModel } from "../../users/schema/user.schema";
 import { IUser } from "../../users/interface/user.interface";
-import { LikesStatusCfgValues } from "./types/like.type";
+import { LikesStatusCfgValues, LikesStatusType } from "./types/like.type";
 import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
 import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
 import { CommentsRepository } from "../../comments/comments.repository";
@@ -41,7 +41,7 @@ export class QueryService {
     }
 
     public async createPostForTheBlog(
-        createPostDtoWithoutIdAndName: ICreatePostDtoWithoutIdAndName,
+        createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
         blogId: string,
     ): Promise<IPost> {
         const blog = await this.blogRepository.find(blogId);
@@ -210,7 +210,7 @@ export class QueryService {
     public async setUpLikeOrDislikeStatus(
         token: string,
         commentOrPostId: string,
-        likeStatus: string,
+        likeStatus: LikesStatusType,
         tag: TagRepositoryTypeCfgValues,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
         const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
@@ -229,7 +229,7 @@ export class QueryService {
     }
 
     public async makeLikeStatusForTheComment(
-        likeStatus: string,
+        likeStatus: LikesStatusType,
         commentOrPostId: string,
         userId: string,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
@@ -243,10 +243,10 @@ export class QueryService {
 
     public async changeLikeStatusForTheComment(
         likeId: string,
-        likeStatus: string,
+        likeStatus: LikesStatusType,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
         const like = await this.likeRepository.findLikeById(likeId);
-        if (like?.likeStatus !== likeStatus) {
+        if (like?.likeStatus !== String(likeStatus)) {
             return await this.likeRepository.updateLikeStatus(likeId, likeStatus);
         }
 

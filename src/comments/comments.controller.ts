@@ -8,6 +8,8 @@ import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { QueryService } from "../sup-services/query/query.service";
 import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
 import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req } from "@nestjs/common";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
 
 @Controller("comments")
 export class CommentsController {
@@ -73,7 +75,7 @@ export class CommentsController {
         @Param("commentId") commentId: string,
         @Req() req: Request,
         @Res() res: Response,
-        @Body() content: string,
+        @Body() createCommentDto: CreateCommentDto,
     ) {
         try {
             const token: string | undefined = req.headers.authorization?.split(" ")[1];
@@ -96,7 +98,10 @@ export class CommentsController {
 
                     return;
                 }
-                const updatedComment: IComment | undefined = await this.commentsService.update(commentId, content);
+                const updatedComment: IComment | undefined = await this.commentsService.update(
+                    commentId,
+                    createCommentDto.content,
+                );
 
                 if (updatedComment) res.sendStatus(HttpStatus.NO_CONTENT);
             }
@@ -158,7 +163,7 @@ export class CommentsController {
         @Param("commentId") commentId: string,
         @Req() req: Request,
         @Res() res: Response,
-        @Body() likeStatus: string,
+        @Body() createLikeStatusDto: CreateLikeStatusDto,
     ) {
         try {
             const token = req.headers.authorization?.split(" ")[1];
@@ -166,7 +171,7 @@ export class CommentsController {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     token,
                     commentId,
-                    likeStatus,
+                    createLikeStatusDto.like,
                     TAG_REPOSITORY.CommentsRepository,
                 );
 

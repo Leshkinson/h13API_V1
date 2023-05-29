@@ -3,8 +3,16 @@ export interface IAuth {
     readonly password: string;
 }
 
-export interface IRegistration {
+export interface IEmail {
+    readonly email: string;
+}
+
+export interface IRegistration extends IEmail {
     readonly login: string;
     readonly password: string;
-    readonly email: string;
+}
+
+export interface INewPassword {
+    readonly newPassword: string;
+    readonly recoveryCode: string;
 }
