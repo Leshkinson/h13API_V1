@@ -14,12 +14,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 errors: [],
             };
             const responseBody: any = exception.getResponse();
-
             responseBody.message.forEach((mess) => {
                 errorResponse.errors.push({ message: mess.message, field: mess.field });
             });
 
             response.status(status).json(errorResponse);
+            return;
         }
         response.status(status).json({
             statusCode: status,

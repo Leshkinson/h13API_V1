@@ -3,8 +3,16 @@ import { UserModel } from "../users/schema/user.schema";
 import { BlogModel } from "../blogs/schema/blog.schema";
 import { BlogsRepository } from "../blogs/blogs.repository";
 import { UsersRepository } from "../users/users.repository";
-import { registerDecorator, ValidationOptions, ValidatorConstraintInterface } from "class-validator";
+import {
+    registerDecorator,
+    ValidationArguments,
+    ValidationOptions,
+    ValidatorConstraint,
+    ValidatorConstraintInterface,
+} from "class-validator";
 
+/**IsExistByParam*/
+@ValidatorConstraint({ name: "IsExistByParam", async: true })
 @Injectable()
 export class _IsExistByParam implements ValidatorConstraintInterface {
     constructor(@Inject("userRepository") private readonly userRepository: UsersRepository) {
@@ -24,13 +32,21 @@ export class _IsExistByParam implements ValidatorConstraintInterface {
         }
         return true;
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // defaultMessage(args: ValidationArguments) {
-    //     return `User doesn't exist`;
-    // }
 }
 
+export function IsExistByParam(validationOptions?: ValidationOptions) {
+    return function (object: any, propertyName: string) {
+        registerDecorator({
+            name: "IsExistByParam",
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            validator: _IsExistByParam,
+        });
+    };
+}
+/**IsNotExistByParamAndConfirm*/
+@ValidatorConstraint({ name: "IsNotExistByParamAndConfirm", async: true })
 @Injectable()
 export class _IsNotExistByParamAndConfirm implements ValidatorConstraintInterface {
     constructor(@Inject("userRepository") private readonly userRepository: UsersRepository) {
@@ -50,13 +66,22 @@ export class _IsNotExistByParamAndConfirm implements ValidatorConstraintInterfac
         }
         return true;
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // defaultMessage(args: ValidationArguments) {
-    //     return `User doesn't exist`;
-    // }
 }
 
+export function IsNotExistByParamAndConfirm(validationOptions?: ValidationOptions) {
+    return function (object: any, propertyName: string) {
+        registerDecorator({
+            name: "IsNotExistByParamAndConfirm",
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            validator: _IsNotExistByParamAndConfirm,
+        });
+    };
+}
+
+/**IsConfirmedEmail*/
+@ValidatorConstraint({ name: "IsConfirmedEmail", async: true })
 @Injectable()
 export class _IsConfirmedEmail implements ValidatorConstraintInterface {
     constructor(@Inject("userRepository") private readonly userRepository: UsersRepository) {
@@ -76,39 +101,23 @@ export class _IsConfirmedEmail implements ValidatorConstraintInterface {
         }
         return true;
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // defaultMessage(args: ValidationArguments) {
-    //     return "Email is confirmed. (This email already confirmed)";
-    // }
 }
 
+export function IsConfirmedEmail(validationOptions?: ValidationOptions) {
+    return function (object: any, propertyName: string) {
+        registerDecorator({
+            name: "IsConfirmedEmail",
+            target: object.constructor,
+            propertyName: propertyName,
+            options: validationOptions,
+            validator: _IsConfirmedEmail,
+        });
+    };
+}
+
+/**IsLikeStatusCheck*/
+@ValidatorConstraint({ name: "IsLikeStatusCheck", async: true })
 @Injectable()
-export class _IsBlogIdCheck implements ValidatorConstraintInterface {
-    constructor(@Inject("blogRepository") private readonly blogRepository: BlogsRepository) {
-        this.blogRepository = new BlogsRepository(BlogModel);
-    }
-
-    async validate(value: string) {
-        try {
-            const blog = await this.blogRepository.find(value);
-            if (!blog) {
-                throw new Error();
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // defaultMessage(args: ValidationArguments) {
-    //     return "Email is confirmed. (This email already confirmed)";
-    // }
-}
-
 export class _IsLikeStatusCheck implements ValidatorConstraintInterface {
     async validate(value: string) {
         try {
@@ -124,42 +133,6 @@ export class _IsLikeStatusCheck implements ValidatorConstraintInterface {
     }
 }
 
-export function IsExistByParam(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
-        registerDecorator({
-            name: "IsExistByParam",
-            target: object.constructor,
-            propertyName: propertyName,
-            options: validationOptions,
-            validator: _IsExistByParam,
-        });
-    };
-}
-
-export function IsNotExistByParamAndConfirm(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
-        registerDecorator({
-            name: "IsNotExistByParamAndConfirm",
-            target: object.constructor,
-            propertyName: propertyName,
-            options: validationOptions,
-            validator: _IsNotExistByParamAndConfirm,
-        });
-    };
-}
-
-export function IsConfirmedEmail(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
-        registerDecorator({
-            name: "IsConfirmedEmail",
-            target: object.constructor,
-            propertyName: propertyName,
-            options: validationOptions,
-            validator: _IsConfirmedEmail,
-        });
-    };
-}
-
 export function IsLikeStatusCheck(validationOptions?: ValidationOptions) {
     return function (object: any, propertyName: string) {
         registerDecorator({
@@ -170,6 +143,29 @@ export function IsLikeStatusCheck(validationOptions?: ValidationOptions) {
             validator: _IsLikeStatusCheck,
         });
     };
+}
+
+/**IsBlogIdCheck*/
+@ValidatorConstraint({ name: "IsBlogIdCheck", async: true })
+@Injectable()
+export class _IsBlogIdCheck implements ValidatorConstraintInterface {
+    constructor(@Inject("blogRepository") private readonly blogRepository: BlogsRepository) {
+        this.blogRepository = new BlogsRepository(BlogModel);
+    }
+
+    async validate(value: string, args: ValidationArguments) {
+        try {
+            const blog = await this.blogRepository.find(value);
+            if (!blog) {
+                throw new Error();
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 export function IsBlogIdCheck(validationOptions?: ValidationOptions) {

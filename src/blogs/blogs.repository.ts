@@ -13,7 +13,7 @@ export class BlogsRepository {
     }
 
     public async findAll(
-        searchNameTerm: { name: { $regex: RegExp } } | {} = {},
+        searchNameTerm: { name: { $regex: RegExp } } | NonNullable<unknown> = {},
         skip: number = 0,
         limit: number = 10,
         sortBy: string = "createdAt",
@@ -38,7 +38,9 @@ export class BlogsRepository {
         return this.blogModel.findOneAndDelete({ _id: id });
     }
 
-    public async getBlogsCount(searchNameTerm: { name: { $regex: RegExp } } | {} = {}): Promise<number> {
+    public async getBlogsCount(
+        searchNameTerm: { name: { $regex: RegExp } } | NonNullable<unknown> = {},
+    ): Promise<number> {
         return this.blogModel.countDocuments(searchNameTerm);
     }
 

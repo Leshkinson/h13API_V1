@@ -17,12 +17,6 @@ export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAnd
     @IsNotEmpty()
     @MaxLength(1000)
     readonly content: string;
-
-    constructor(props: ICreatePostDtoWithoutIdAndName) {
-        this.title = props.title;
-        this.shortDescription = props.shortDescription;
-        this.content = props.content;
-    }
 }
 
 export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
@@ -30,9 +24,4 @@ export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
     @IsNotEmpty()
     @IsBlogIdCheck({ message: "BlogId has incorrect value. (BlogId not found)" })
     readonly blogId: string;
-
-    constructor(props: ICreatePostDtoWithoutIdAndName, blogId: string) {
-        super(props);
-        this.blogId = blogId;
-    }
 }

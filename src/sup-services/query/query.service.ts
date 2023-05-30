@@ -6,7 +6,7 @@ import { BlogModel } from "../../blogs/schema/blog.schema";
 import { LikesRepository } from "./like.repository";
 import { LikeModel } from "./schema/like.schema";
 import { RefType, SortOrder } from "mongoose";
-import { CreatePostDto, CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
+import { CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
 import { IPost } from "../../posts/interface/post.interface";
 import { UsersRepository } from "../../users/users.repository";
 import { UserModel } from "../../users/schema/user.schema";
@@ -47,8 +47,8 @@ export class QueryService {
         const blog = await this.blogRepository.find(blogId);
         if (blog) {
             //const blogId = new mongoose.Types.ObjectId((blog?._id).toString());
-            const createPostDto = new CreatePostDto(createPostDtoWithoutIdAndName, blogId);
-            return await this.postRepository.create(createPostDto);
+            //const createPostDto = new CreatePostDto(createPostDtoWithoutIdAndName, blogId);
+            return await this.postRepository.create(createPostDtoWithoutIdAndName, blog.name);
         }
         throw new Error();
     }

@@ -2,22 +2,23 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus }
 import { BlogsService } from "./blogs.service";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
-import { IBlog, ICreateBlogDto } from "./interface/blog.interface";
+import { IBlog } from "./interface/blog.interface";
 import { Request, Response } from "express";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
-import { ICreatePostDtoWithoutIdAndName, IPost } from "../posts/interface/post.interface";
+import { IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
 import { TAG_REPOSITORY } from "../const/const";
 import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("blogs")
 export class BlogsController {
     constructor(private readonly blogsService: BlogsService, private readonly queryService: QueryService) {}
-
     @Post()
-    public async create(@Body() createBlogDto: ICreateBlogDto, @Res() res: Response) {
+    @AuthGuard()
+    public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
-            console.log('createBlogDto', createBlogDto);
+            console.log("createBlogDto", createBlogDto);
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
             res.status(HttpStatus.CREATED).json(newBlog);
         } catch (error) {
@@ -74,6 +75,7 @@ export class BlogsController {
     }
 
     @Put(":id")
+    @AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         try {
             const updateBlog = await this.blogsService.update(+id, updateBlogDto);
@@ -89,6 +91,7 @@ export class BlogsController {
     }
 
     @Delete(":id")
+    @AuthGuard()
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.blogsService.delete(id);
@@ -137,6 +140,7 @@ export class BlogsController {
     }
 
     @Post(":blogId/posts")
+    @AuthGuard()
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
         @Body() createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,

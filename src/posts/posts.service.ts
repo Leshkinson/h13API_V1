@@ -19,7 +19,11 @@ export class PostsService {
         this.blogRepository = new BlogsRepository(BlogModel);
     }
     public async create(createPostDto: CreatePostDto) {
-        return this.postRepository.create(createPostDto);
+        const blog: IBlog | null = await this.blogRepository.find(createPostDto.blogId);
+        if (blog) {
+            return this.postRepository.create(createPostDto, blog.name);
+        }
+        throw new Error();
     }
 
     public async findAllPosts(

@@ -15,6 +15,7 @@ import { UsersService } from "../users/users.service";
 import { AuthService } from "../auth/auth.service";
 import { CreateCommentDto } from "../comments/dto/create-comment.dto";
 import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("posts")
 export class PostsController {
@@ -26,6 +27,7 @@ export class PostsController {
     ) {}
 
     @Post()
+    @AuthGuard()
     public async create(@Body() createPostDto: CreatePostDto, @Res() res: Response) {
         try {
             const newPost: IPost | undefined = await this.postsService.create(createPostDto);
@@ -92,6 +94,7 @@ export class PostsController {
     }
 
     @Put(":id")
+    @AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updatePostDto: UpdatePostDto) {
         try {
             const updatePost: IPost | undefined = await this.postsService.update(id, updatePostDto);
@@ -107,6 +110,7 @@ export class PostsController {
     }
 
     @Delete(":id")
+    @AuthGuard()
     public async delete(@Param("id") id: RefType, @Res() res: Response) {
         try {
             await this.postsService.delete(id);

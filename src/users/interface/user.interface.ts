@@ -9,3 +9,9 @@ export interface IUser {
     code: string;
     expirationDate: Date;
 }
+
+export interface ICreateUserDto {
+    login: string;
+    password: string;
+    email: string;
+}

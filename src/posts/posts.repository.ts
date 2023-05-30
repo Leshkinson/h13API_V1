@@ -1,20 +1,22 @@
 import { Model, RefType, SortOrder } from "mongoose";
 import { IPost } from "./interface/post.interface";
 import { Inject, Injectable } from "@nestjs/common";
-import { CreatePostDto } from "./dto/create-post.dto";
+import { CreatePostDtoWithoutIdAndName } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Injectable()
 export class PostsRepository {
     constructor(@Inject("Post") private readonly postModel: Model<IPost>) {}
 
-    public async create(createPostDto: CreatePostDto): Promise<IPost> {
-        return this.postModel.create(createPostDto);
+    public async create(
+        createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
+        blogName: string,
+    ): Promise<IPost> {
+        return this.postModel.create({ ...createPostDtoWithoutIdAndName, blogName });
     }
 
     public async findAll(
         blogId?: RefType,
-        pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
         skip: number = 0,

@@ -5,12 +5,14 @@ import { Request, Response } from "express";
 import { IUser } from "./interface/user.interface";
 import { UsersRequest } from "./types/user.type";
 import { QueryService } from "../sup-services/query/query.service";
+import { AuthGuard } from "../auth.guard";
 
 @Controller("users")
 export class UsersController {
     constructor(private readonly usersService: UsersService, private readonly queryService: QueryService) {}
 
     @Post()
+    @AuthGuard()
     public async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
         try {
             const newUser: IUser = await this.usersService.create(createUserDto);
@@ -24,6 +26,7 @@ export class UsersController {
     }
 
     @Get()
+    @AuthGuard()
     public async getAllUsers(@Req() req: Request, @Res() res: Response) {
         try {
             // eslint-disable-next-line prefer-const
@@ -57,6 +60,7 @@ export class UsersController {
     }
 
     @Delete(":id")
+    @AuthGuard()
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.usersService.delete(id);
