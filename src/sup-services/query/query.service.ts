@@ -1,22 +1,22 @@
+import { RefType, SortOrder } from "mongoose";
+import { LikeModel } from "./schema/like.schema";
+import { LikesRepository } from "./like.repository";
 import { Inject, Injectable } from "@nestjs/common";
-import { PostsRepository } from "../../posts/posts.repository";
-import { BlogsRepository } from "../../blogs/blogs.repository";
+import { AuthService } from "../../auth/auth.service";
+import { UserModel } from "../../users/schema/user.schema";
 import { PostModel } from "../../posts/schema/post.schema";
 import { BlogModel } from "../../blogs/schema/blog.schema";
-import { LikesRepository } from "./like.repository";
-import { LikeModel } from "./schema/like.schema";
-import { RefType, SortOrder } from "mongoose";
-import { CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
 import { IPost } from "../../posts/interface/post.interface";
-import { UsersRepository } from "../../users/users.repository";
-import { UserModel } from "../../users/schema/user.schema";
 import { IUser } from "../../users/interface/user.interface";
-import { LikesStatusCfgValues, LikesStatusType } from "./types/like.type";
-import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
-import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
-import { CommentsRepository } from "../../comments/comments.repository";
+import { PostsRepository } from "../../posts/posts.repository";
+import { BlogsRepository } from "../../blogs/blogs.repository";
+import { UsersRepository } from "../../users/users.repository";
 import { IComment } from "../../comments/interface/comment.interface";
-import { AuthService } from "../../auth/auth.service";
+import { CommentsRepository } from "../../comments/comments.repository";
+import { LikesStatusCfgValues, LikesStatusType } from "./types/like.type";
+import { CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
+import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
+import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
 
 @Injectable()
 export class QueryService {
@@ -160,12 +160,7 @@ export class QueryService {
         return post;
     }
 
-    public async getTotalCountLikeOrDislike(
-        id: string,
-        param: string,
-        //repository: CommentsRepository | PostsRepository,
-        tag: TagRepositoryTypeCfgValues,
-    ) {
+    public async getTotalCountLikeOrDislike(id: string, param: string, tag: TagRepositoryTypeCfgValues) {
         let commentOrPost: IPost | IComment;
         if (tag === "PostsRepository") {
             commentOrPost = await this.postRepository.find(id);
@@ -186,7 +181,6 @@ export class QueryService {
     }
 
     public async getUpgradeLikes(likes: ILikeStatusWithoutId[]): Promise<(UpgradeLikes | undefined)[]> {
-        //const userService = new UserService();
         const result: (UpgradeLikes | undefined)[] = await Promise.all(
             likes.map(async (like: ILikeStatusWithoutId): Promise<UpgradeLikes | undefined> => {
                 const user = await this.userRepository.find(like.userId);
@@ -275,12 +269,6 @@ export class QueryService {
         const post = await this.postRepository.find(postId);
         const skip: number = (+pageNumber - 1) * +pageSize;
         if (post) {
-            // return this.commentModel
-            //     .find({ postId: post?._id?.toString() })
-            //     .sort({ [sortBy]: sortDirection })
-            //     .skip(skip)
-            //     .limit(+pageSize);
-
             return await this.commentRepository.findAllForThePost(
                 post?._id?.toString(),
                 sortBy,

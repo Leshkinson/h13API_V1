@@ -1,6 +1,6 @@
-import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
-import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { IsBlogIdCheck } from "../../pipes/validation.pipes";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
+import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
 
 export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAndName {
     @IsString()

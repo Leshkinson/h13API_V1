@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, Req, HttpStatus } from "@nestjs/common";
-import { UsersService } from "./users.service";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { Request, Response } from "express";
-import { IUser } from "./interface/user.interface";
-import { UsersRequest } from "./types/user.type";
-import { QueryService } from "../sup-services/query/query.service";
 import { AuthGuard } from "../auth.guard";
+import { Request, Response } from "express";
+import { UsersService } from "./users.service";
+import { UsersRequest } from "./types/user.type";
+import { IUser } from "./interface/user.interface";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { QueryService } from "../sup-services/query/query.service";
+import { Controller, Get, Post, Body, Param, Delete, Res, Req, HttpStatus } from "@nestjs/common";
 
 @Controller("users")
 export class UsersController {

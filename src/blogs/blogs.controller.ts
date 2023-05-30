@@ -18,7 +18,6 @@ export class BlogsController {
     @AuthGuard()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
-            console.log("createBlogDto", createBlogDto);
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
             res.status(HttpStatus.CREATED).json(newBlog);
         } catch (error) {

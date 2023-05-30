@@ -1,8 +1,8 @@
-import { Model, RefType, SortOrder } from "mongoose";
 import { IPost } from "./interface/post.interface";
 import { Inject, Injectable } from "@nestjs/common";
-import { CreatePostDtoWithoutIdAndName } from "./dto/create-post.dto";
+import { Model, RefType, SortOrder } from "mongoose";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { CreatePostDtoWithoutIdAndName } from "./dto/create-post.dto";
 
 @Injectable()
 export class PostsRepository {
@@ -17,6 +17,7 @@ export class PostsRepository {
 
     public async findAll(
         blogId?: RefType,
+        pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
         skip: number = 0,

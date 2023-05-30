@@ -1,21 +1,21 @@
 import { RefType } from "mongoose";
+import { AuthGuard } from "../auth.guard";
 import { Request, Response } from "express";
 import { PostsService } from "./posts.service";
-import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { PostsRequest } from "./types/post.types";
+import { AuthService } from "../auth/auth.service";
 import { IPost } from "./interface/post.interface";
+import { UsersService } from "../users/users.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { QueryService } from "../sup-services/query/query.service";
-import { Controller, Get, Post, Body, Put, Param, Delete, Res, HttpStatus, Req } from "@nestjs/common";
-import { IComment } from "../comments/interface/comment.interface";
 import { CommentsRequest } from "../comments/types/comment.type";
-import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
-import { UsersService } from "../users/users.service";
-import { AuthService } from "../auth/auth.service";
+import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
+import { QueryService } from "../sup-services/query/query.service";
+import { IComment } from "../comments/interface/comment.interface";
 import { CreateCommentDto } from "../comments/dto/create-comment.dto";
+import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
 import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
-import { AuthGuard } from "../auth.guard";
+import { Controller, Get, Post, Body, Put, Param, Delete, Res, HttpStatus, Req } from "@nestjs/common";
 
 @Controller("posts")
 export class PostsController {
@@ -123,8 +123,6 @@ export class PostsController {
             }
         }
     }
-
-    //@Delete
 
     @Post(":postId/comments")
     public async createCommentThePost(

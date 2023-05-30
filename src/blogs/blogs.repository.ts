@@ -1,6 +1,6 @@
-import { Model, RefType, SortOrder } from "mongoose";
 import { IBlog } from "./interface/blog.interface";
 import { Inject, Injectable } from "@nestjs/common";
+import { Model, RefType, SortOrder } from "mongoose";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 
