@@ -21,6 +21,7 @@ import { blogsProviders } from "../blogs/blogs.providers";
 import { UsersService } from "../users/users.service";
 import { MailModule } from "../sup-services/application/mailer/mail.module";
 import { MailService } from "../sup-services/application/mailer/mail.service";
+import { CommentsSchema } from "../comments/schema/comments.schema";
 
 @Module({
     imports: [DatabaseModule, MailModule],

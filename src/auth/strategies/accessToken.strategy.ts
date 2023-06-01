@@ -13,11 +13,13 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, "jwt") {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
             secretOrKey: SETTINGS_TOKEN.JWT_ACCESS_SECRET,
         });
     }
 
     validate(payload: JWT) {
+        console.log("payload", payload);
         return payload;
     }
 }

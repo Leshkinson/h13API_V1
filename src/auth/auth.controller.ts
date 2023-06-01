@@ -19,6 +19,7 @@ export class AuthController {
     @Post("login")
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
+            console.log("authDto", authDto);
             const user = await this.usersService.verifyUser(authDto);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
@@ -40,6 +41,7 @@ export class AuthController {
                     accessToken: pairTokens.refreshToken,
                 });
             }
+            throw new Error();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -132,12 +134,14 @@ export class AuthController {
     }
 
     @Post("registration-confirmation")
-    public async confirmEmail(@Body() code: string, @Res() res: Response) {
+    public async confirmEmail(@Body() code: any, @Res() res: Response) {
         try {
-            const confirmed = await this.usersService.confirmUser(code);
+            console.log("code", code.code);
+            const confirmed = await this.usersService.confirmUser(code.code);
             if (confirmed) {
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
+            throw new Error();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.BAD_REQUEST);

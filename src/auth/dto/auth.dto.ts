@@ -6,10 +6,10 @@ export class AuthDto implements IAuth {
     readonly loginOrEmail: string;
     readonly password: string;
 
-    constructor(props: IAuth) {
-        this.loginOrEmail = props.loginOrEmail;
-        this.password = props.password;
-    }
+    // constructor(props: IAuth) {
+    //     this.loginOrEmail = props.loginOrEmail;
+    //     this.password = props.password;
+    // }
 }
 
 export class RegistrationDto implements IRegistration {
@@ -17,7 +17,7 @@ export class RegistrationDto implements IRegistration {
     @IsNotEmpty()
     @MinLength(3)
     @MaxLength(10)
-    @Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
+    //@Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
     @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
     readonly login: string;
 
@@ -30,15 +30,15 @@ export class RegistrationDto implements IRegistration {
     @IsString()
     @IsNotEmpty()
     @IsEmail()
-    @IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
+    //@IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
 
-    constructor(props: IRegistration) {
-        this.login = props.login;
-        this.password = props.password;
-        this.email = props.email;
-    }
+    // constructor(props: IRegistration) {
+    //     this.login = props.login;
+    //     this.password = props.password;
+    //     this.email = props.email;
+    // }
 }
 
 export class EmailDto implements IEmail {
@@ -49,9 +49,9 @@ export class EmailDto implements IEmail {
     @IsNotExistByParamAndConfirm({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
 
-    constructor(props: IEmail) {
-        this.email = props.email;
-    }
+    // constructor(props: IEmail) {
+    //     this.email = props.email;
+    // }
 }
 
 export class NewPasswordDto implements INewPassword {

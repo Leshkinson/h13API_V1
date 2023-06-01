@@ -82,9 +82,12 @@ export class UsersService {
     }
 
     public async confirmUser(code: string): Promise<boolean | null | IUser> {
+        console.log("code in service", code);
         const user = await this.getUserByParam(code);
+        console.log("user", user);
         if (!user) return false;
         if (new Date(user.expirationDate).getTime() > new Date().getTime()) {
+            console.log("here");
             return await this.userRepository.updateUserByConfirmed(user._id.toString());
         }
         await this.userRepository.delete(user._id.toString());
@@ -119,6 +122,7 @@ export class UsersService {
 
     public async verifyUser(authDto: IAuth): Promise<IUser> {
         const consideredUser = await this.getUserByParam(authDto.loginOrEmail);
+        console.log("consideredUser", consideredUser);
         if (!consideredUser) throw new Error();
         if (await bcrypt.compare(authDto.password, consideredUser.password)) return consideredUser;
 

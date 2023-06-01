@@ -24,11 +24,11 @@ import { MailModule } from "../sup-services/application/mailer/mail.module";
         MailService,
         {
             provide: "sessionRepository",
-            useValue: SessionsRepository,
+            useClass: SessionsRepository,
         },
         {
             provide: "userRepository",
-            useValue: UsersRepository,
+            useClass: UsersRepository,
         },
         {
             provide: `${MAILER_OPTIONS}`,
