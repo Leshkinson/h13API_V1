@@ -43,8 +43,7 @@ export class AuthService {
         if (Date.now() >= exp * 1000) {
             return false;
         }
-
-        return this.jwtService.verify(token, { secret: SETTINGS_TOKEN.JWT_ACCESS_SECRET });
+        return this.jwtService.verify(token, { secret: this.secretAccess });
     }
 
     public getPayloadByRefreshToken(token: string): string | JwtPayload | JWT | boolean {

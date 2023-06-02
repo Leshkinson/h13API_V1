@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
 import { Response, Request } from "express";
@@ -7,6 +7,10 @@ import { TokenMapper } from "./dto/mapper/token-mapper";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
 import { JWT } from "../const/const";
+import { AuthGuard } from "@nestjs/passport";
+import { AccessGuard } from "./access.guard";
+import { JwtAuthGuard } from "./jwt-auth.guard";
+import { JwtStrategy } from "./strategies/jwt.strategy";
 
 @Controller("auth")
 export class AuthController {
@@ -38,8 +42,9 @@ export class AuthController {
                 });
 
                 res.status(HttpStatus.OK).json({
-                    accessToken: pairTokens.refreshToken,
+                    accessToken: pairTokens.accessToken,
                 });
+                return;
             }
             throw new Error();
         } catch (error) {
@@ -97,13 +102,17 @@ export class AuthController {
             }
         }
     }
-
+    // @UseGuards(AccessGuard)
+    @UseGuards(JwtAuthGuard)
+    //@UseGuards(AuthGuard(JwtStrategy))
     @Get("me")
     public async me(@Req() req: Request, @Res() res: Response) {
         try {
             const token: string | undefined = req.headers.authorization?.split(" ")[1];
+            console.log("token in controller", token);
             if (token) {
                 const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
+                console.log("payload in controller", payload);
                 const user = await this.usersService.getUserById(payload.id);
                 res.status(HttpStatus.OK).json({
                     email: user?.email,

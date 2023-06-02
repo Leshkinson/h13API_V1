@@ -36,4 +36,4 @@ export const SETTINGS_TOKEN = {
     JWT_REFRESH_SECRET: "superpupermegasecret",
     TOKEN_ACCESS_LIVE_TIME: "10m",
     TOKEN_REFRESH_LIVE_TIME: "100m",
-}
+};
