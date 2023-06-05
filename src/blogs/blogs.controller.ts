@@ -74,7 +74,7 @@ export class BlogsController {
     }
 
     @Put(":id")
-    @AuthGuard()
+    //@AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         try {
             const updateBlog = await this.blogsService.update(+id, updateBlogDto);
@@ -90,7 +90,7 @@ export class BlogsController {
     }
 
     @Delete(":id")
-    @AuthGuard()
+    //@AuthGuard()
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.blogsService.delete(id);
