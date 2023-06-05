@@ -139,7 +139,7 @@ export class BlogsController {
     }
 
     @Post(":blogId/posts")
-    @AuthGuard()
+    //@AuthGuard()
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
         @Body() createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
