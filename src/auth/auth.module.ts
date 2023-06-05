@@ -25,7 +25,7 @@ import { APP_GUARD } from "@nestjs/core";
         DatabaseModule,
         MailModule,
         PassportModule,
-        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_ACCESS_SECRET, signOptions: { expiresIn: "60s" } }),
+        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "60s" } }),
     ],
     controllers: [AuthController],
     providers: [

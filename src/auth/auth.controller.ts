@@ -11,6 +11,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { AccessGuard } from "./access.guard";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import {RefreshGuard} from "./refresh.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -23,7 +24,6 @@ export class AuthController {
     @Post("login")
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
-            console.log("authDto", authDto);
             const user = await this.usersService.verifyUser(authDto);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
@@ -54,16 +54,16 @@ export class AuthController {
             }
         }
     }
-
+    @UseGuards(RefreshGuard)
     @Post("logout")
     public async logout(@Req() req: Request, @Res() res: Response) {
         try {
-            const { refreshToken } = req.cookies;
-            const payload = await this.authService.getPayloadFromToken(refreshToken);
+            // @ts-ignore
+            const { email, deviceId } = req.user as string
             //todo change on search by id
-            const user = await this.usersService.getUserByParam(payload.email);
+            const user = await this.usersService.getUserByParam(email);
             if (user) {
-                await this.sessionsService.deleteTheSession(String(user._id), payload.deviceId);
+                await this.sessionsService.deleteTheSession(String(user._id), deviceId);
                 res.clearCookie("refreshToken");
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
@@ -74,15 +74,15 @@ export class AuthController {
             }
         }
     }
-
+    @UseGuards(RefreshGuard)
     @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
-            const { refreshToken } = req.cookies;
-            const payload = await this.authService.getPayloadFromToken(refreshToken);
-            const user = await this.usersService.getUserByParam(payload.email);
+            // @ts-ignore
+            const { email, deviceId } = req.user as string
+            const user = await this.usersService.getUserByParam(email);
             if (user) {
-                const updateSessionDevice = (await this.sessionsService.updateSession(payload.deviceId)) as ISession;
+                const updateSessionDevice = (await this.sessionsService.updateSession(deviceId)) as ISession;
                 const newPairTokens = await this.authService.getTokens(
                     TokenMapper.prepareAccessAndRefreshModel(user, updateSessionDevice),
                 );
@@ -102,24 +102,19 @@ export class AuthController {
             }
         }
     }
-    // @UseGuards(AccessGuard)
-    @UseGuards(JwtAuthGuard)
-    //@UseGuards(AuthGuard(JwtStrategy))
+
+    @UseGuards(AccessGuard)
     @Get("me")
     public async me(@Req() req: Request, @Res() res: Response) {
         try {
-            const token: string | undefined = req.headers.authorization?.split(" ")[1];
-            console.log("token in controller", token);
-            if (token) {
-                const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
-                console.log("payload in controller", payload);
-                const user = await this.usersService.getUserById(payload.id);
-                res.status(HttpStatus.OK).json({
-                    email: user?.email,
-                    login: user?.login,
-                    userId: payload.id,
-                });
-            }
+            // @ts-ignore
+            const {userId} = req.user as string
+            const user = await this.usersService.getUserById(userId);
+            res.status(HttpStatus.OK).json({
+                email: user?.email,
+                login: user?.login,
+                userId: userId,
+            });
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -145,7 +140,6 @@ export class AuthController {
     @Post("registration-confirmation")
     public async confirmEmail(@Body() code: any, @Res() res: Response) {
         try {
-            console.log("code", code.code);
             const confirmed = await this.usersService.confirmUser(code.code);
             if (confirmed) {
                 res.sendStatus(HttpStatus.NO_CONTENT);

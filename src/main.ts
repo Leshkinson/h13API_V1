@@ -2,12 +2,14 @@ import { AppModule } from "./app.module";
 import { NestFactory } from "@nestjs/core";
 import { useContainer } from "class-validator";
 import { HttpExceptionFilter } from "./exception.filter";
+import * as cookieParser from 'cookie-parser';
 import { BadRequestException, Logger, ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         logger: new Logger(),
     });
+    app.use(cookieParser());
     app.useGlobalPipes(
         new ValidationPipe({
             stopAtFirstError: false,
