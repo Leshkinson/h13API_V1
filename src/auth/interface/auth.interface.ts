@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface IAuth {
     readonly loginOrEmail: string;
     readonly password: string;
@@ -15,4 +17,12 @@ export interface IRegistration extends IEmail {
 export interface INewPassword {
     readonly newPassword: string;
     readonly recoveryCode: string;
+}
+
+export interface RequestWithUser extends Request {
+    user: {
+        readonly userId: string;
+        readonly email: string;
+        readonly deviceId: string;
+    };
 }

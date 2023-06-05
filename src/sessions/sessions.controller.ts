@@ -1,9 +1,11 @@
-import { Controller, Get, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Param, Delete, Req, Res, HttpStatus, UseGuards } from "@nestjs/common";
 import { SessionsService } from "./sessions.service";
 import { Request, Response } from "express";
 import { UsersService } from "../users/users.service";
 import { AuthService } from "../auth/auth.service";
 import { JWT } from "../const/const";
+import { RefreshGuard } from "../auth/refresh.guard";
+import { RequestWithUser } from "../auth/interface/auth.interface";
 
 @Controller("security")
 export class SessionsController {
@@ -12,13 +14,13 @@ export class SessionsController {
         private readonly usersService: UsersService,
         private readonly authService: AuthService,
     ) {}
-
+    @UseGuards(RefreshGuard)
     @Get("devices")
     async getAllDevices(@Req() req: Request, @Res() res: Response) {
         try {
-            const { refreshToken } = req.cookies;
-            const payload = await this.authService.getPayloadFromToken(refreshToken);
-            const user = await this.usersService.getUserByParam(payload.email);
+            const request = req as RequestWithUser;
+            const { email } = request.user;
+            const user = await this.usersService.getUserByParam(email);
             if (user) {
                 const sessions = await this.sessionsService.getAllSessionByUser(String(user._id));
                 res.status(HttpStatus.OK).json(sessions);
@@ -34,17 +36,19 @@ export class SessionsController {
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
-            const { refreshToken } = req.cookies;
-
-            const payload = await this.authService.getPayloadFromToken(refreshToken);
-            if (!payload) {
-                res.sendStatus(403);
+            // const { refreshToken } = req.cookies;
+            //
+            // const payload = await this.authService.getPayloadFromToken(refreshToken);
+            const request = req as RequestWithUser;
+            const { email, deviceId } = request.user;
+            if (!email && !deviceId) {
+                res.sendStatus(HttpStatus.FORBIDDEN);
 
                 return;
             }
-            const user = await this.usersService.getUserByParam(payload.email);
+            const user = await this.usersService.getUserByParam(email);
             if (user) {
-                await this.sessionsService.deleteSessionWithExcept(String(user._id), payload.deviceId);
+                await this.sessionsService.deleteSessionWithExcept(String(user._id), deviceId);
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
         } catch (error) {

@@ -2,7 +2,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Request } from "express";
 import { Injectable } from "@nestjs/common";
-import {JWT, SETTINGS_TOKEN} from "../../const/const";
+import { JWT, SETTINGS_TOKEN } from "../../const/const";
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, "refresh") {
@@ -10,7 +10,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, "refresh") 
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
                 RefreshTokenStrategy.extractJWT,
-                ExtractJwt.fromAuthHeaderAsBearerToken()
+                ExtractJwt.fromAuthHeaderAsBearerToken(),
             ]),
             ignoreExpiration: false,
             secretOrKey: SETTINGS_TOKEN.JWT_REFRESH_SECRET,
@@ -23,7 +23,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, "refresh") 
     }
 
     private static extractJWT(req: Request): string | null {
-        if (req.cookies && 'refreshToken' in req.cookies) {
+        if (req.cookies && "refreshToken" in req.cookies) {
             return req.cookies.refreshToken;
         }
         return null;

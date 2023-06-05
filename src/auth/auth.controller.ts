@@ -6,12 +6,9 @@ import { UsersService } from "../users/users.service";
 import { TokenMapper } from "./dto/mapper/token-mapper";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
-import { JWT } from "../const/const";
-import { AuthGuard } from "@nestjs/passport";
 import { AccessGuard } from "./access.guard";
-import { JwtAuthGuard } from "./jwt-auth.guard";
-import { JwtStrategy } from "./strategies/jwt.strategy";
-import {RefreshGuard} from "./refresh.guard";
+import { RefreshGuard } from "./refresh.guard";
+import { RequestWithUser } from "./interface/auth.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -58,8 +55,8 @@ export class AuthController {
     @Post("logout")
     public async logout(@Req() req: Request, @Res() res: Response) {
         try {
-            // @ts-ignore
-            const { email, deviceId } = req.user as string
+            const request = req as RequestWithUser;
+            const { email, deviceId } = request.user;
             //todo change on search by id
             const user = await this.usersService.getUserByParam(email);
             if (user) {
@@ -78,8 +75,8 @@ export class AuthController {
     @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
-            // @ts-ignore
-            const { email, deviceId } = req.user as string
+            const request = req as RequestWithUser;
+            const { email, deviceId } = request.user;
             const user = await this.usersService.getUserByParam(email);
             if (user) {
                 const updateSessionDevice = (await this.sessionsService.updateSession(deviceId)) as ISession;
@@ -107,8 +104,8 @@ export class AuthController {
     @Get("me")
     public async me(@Req() req: Request, @Res() res: Response) {
         try {
-            // @ts-ignore
-            const {userId} = req.user as string
+            const request = req as RequestWithUser;
+            const { userId } = request.user;
             const user = await this.usersService.getUserById(userId);
             res.status(HttpStatus.OK).json({
                 email: user?.email,
