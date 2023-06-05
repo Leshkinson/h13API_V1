@@ -1,14 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { AuthDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
 import { Response, Request } from "express";
+import { AccessGuard } from "./access.guard";
+import { AuthService } from "./auth.service";
+import { RefreshGuard } from "./refresh.guard";
 import { UsersService } from "../users/users.service";
 import { TokenMapper } from "./dto/mapper/token-mapper";
+import { RequestWithUser } from "./interface/auth.interface";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
-import { AccessGuard } from "./access.guard";
-import { RefreshGuard } from "./refresh.guard";
-import { RequestWithUser } from "./interface/auth.interface";
+import { AuthDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
 
 @Controller("auth")
 export class AuthController {
