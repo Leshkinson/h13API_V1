@@ -15,7 +15,7 @@ import { AuthGuard } from "../auth.guard";
 export class BlogsController {
     constructor(private readonly blogsService: BlogsService, private readonly queryService: QueryService) {}
     @Post()
-    @AuthGuard()
+    //@AuthGuard()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
