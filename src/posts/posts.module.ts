@@ -5,6 +5,8 @@ import { AuthService } from "../auth/auth.service";
 import { postsProviders } from "./posts.providers";
 import { PostsController } from "./posts.controller";
 import { PostsRepository } from "./posts.repository";
+import { UsersService } from "../users/users.service";
+import { blogsProviders } from "../blogs/blogs.providers";
 import { usersProviders } from "../users/users.providers";
 import { UsersRepository } from "../users/users.repository";
 import { BlogsRepository } from "../blogs/blogs.repository";
@@ -17,11 +19,8 @@ import { CommentsRepository } from "../comments/comments.repository";
 import { SessionsRepository } from "../sessions/sessions.repository";
 import { likesProviders } from "../sup-services/query/like.providers";
 import { LikesRepository } from "../sup-services/query/like.repository";
-import { blogsProviders } from "../blogs/blogs.providers";
-import { UsersService } from "../users/users.service";
 import { MailModule } from "../sup-services/application/mailer/mail.module";
 import { MailService } from "../sup-services/application/mailer/mail.service";
-import { CommentsSchema } from "../comments/schema/comments.schema";
 
 @Module({
     imports: [DatabaseModule, MailModule],
@@ -65,5 +64,6 @@ import { CommentsSchema } from "../comments/schema/comments.schema";
         ...commentsProviders,
         ...sessionsProviders,
     ],
+    exports: [PostsService],
 })
 export class PostsModule {}

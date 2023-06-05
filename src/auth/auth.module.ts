@@ -47,5 +47,6 @@ import { MailService } from "../sup-services/application/mailer/mail.service";
         ...usersProviders,
         ...sessionsProviders,
     ],
+    exports: [AuthService],
 })
 export class AuthModule {}

@@ -1,12 +1,26 @@
-import { Controller, Get } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { Controller, Delete } from "@nestjs/common";
+import { BlogsService } from "./blogs/blogs.service";
+import { UsersService } from "./users/users.service";
+import { PostsService } from "./posts/posts.service";
+import { CommentsService } from "./comments/comments.service";
+import { QueryService } from "./sup-services/query/query.service";
 
 @Controller()
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    constructor(
+        private readonly blogService: BlogsService,
+        private readonly usersService: UsersService,
+        private readonly commentsService: CommentsService,
+        private readonly postsService: PostsService,
+        private readonly queryService: QueryService,
+    ) {}
 
-    @Get()
-    getHello(): string {
-        return this.appService.getHello();
+    @Delete("testing/all-data")
+    async deleteAll(): Promise<void> {
+        await this.blogService.testingDelete();
+        await this.postsService.testingDelete();
+        await this.usersService.testingDelete();
+        await this.queryService.testingDelete();
+        await this.commentsService.testingDelete();
     }
 }

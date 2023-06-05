@@ -69,5 +69,6 @@ import { MailModule } from "../sup-services/application/mailer/mail.module";
         ...commentsProviders,
         ...sessionsProviders,
     ],
+    exports: [CommentsService],
 })
 export class CommentsModule {}

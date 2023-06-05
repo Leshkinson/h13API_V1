@@ -59,5 +59,6 @@ import { sessionsProviders } from "../sessions/sessions.providers";
         ...commentsProviders,
         ...sessionsProviders,
     ],
+    exports: [BlogsService],
 })
 export class BlogsModule {}

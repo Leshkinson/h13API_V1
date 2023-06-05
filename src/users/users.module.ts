@@ -67,5 +67,6 @@ import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
         ...commentsProviders,
         ...sessionsProviders,
     ],
+    exports: [UsersService],
 })
 export class UsersModule {}

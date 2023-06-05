@@ -285,4 +285,8 @@ export class QueryService {
 
         return this.commentRepository.getCount(post?._id?.toString());
     }
+
+    public async testingDelete(): Promise<void> {
+        await this.likeRepository.deleteAll();
+    }
 }
