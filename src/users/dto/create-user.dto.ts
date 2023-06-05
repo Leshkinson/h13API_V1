@@ -18,7 +18,7 @@ export class CreateUserDto implements ICreateUserDto {
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
-    @Matches(/^[\\w-]\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/)
+    @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
     readonly email: string;
 }
