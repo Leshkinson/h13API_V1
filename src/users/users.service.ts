@@ -123,8 +123,14 @@ export class UsersService {
     public async verifyUser(authDto: IAuth): Promise<IUser> {
         const consideredUser = await this.getUserByParam(authDto.loginOrEmail);
         console.log("consideredUser", consideredUser);
-        if (!consideredUser) throw new Error();
-        if (await bcrypt.compare(authDto.password, consideredUser.password)) return consideredUser;
+        if (!consideredUser) {
+            console.log("here 1");
+            throw new Error();
+        }
+        if (await bcrypt.compare(authDto.password, consideredUser.password)) {
+            console.log("here 2");
+            return consideredUser;
+        }
 
         throw new Error();
     }
