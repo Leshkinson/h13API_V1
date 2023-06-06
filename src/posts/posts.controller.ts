@@ -1,5 +1,5 @@
 import { RefType } from "mongoose";
-//import { AuthGuard } from "../auth.guard";
+import { AuthGuard } from "../auth.guard";
 import { Request, Response } from "express";
 import { PostsService } from "./posts.service";
 import { PostsRequest } from "./types/post.types";
@@ -27,7 +27,7 @@ export class PostsController {
     ) {}
 
     @Post()
-    //@AuthGuard()
+    @AuthGuard()
     public async create(@Body() createPostDto: CreatePostDto, @Res() res: Response) {
         try {
             const newPost: IPost | undefined = await this.postsService.create(createPostDto);
@@ -52,8 +52,6 @@ export class PostsController {
             pageSize = Number(pageSize ?? 10);
 
             const posts: IPost[] = await this.postsService.findAllPosts(pageNumber, pageSize, sortBy, sortDirection);
-            console.log("posts", posts);
-
             const totalCount: number = await this.postsService.getTotalCountForPosts();
             if (posts) {
                 res.status(HttpStatus.OK).json({
@@ -95,7 +93,7 @@ export class PostsController {
     }
 
     @Put(":id")
-    //@AuthGuard()
+    @AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updatePostDto: UpdatePostDto) {
         try {
             const updatePost: IPost | undefined = await this.postsService.update(id, updatePostDto);
@@ -111,7 +109,7 @@ export class PostsController {
     }
 
     @Delete(":id")
-    //@AuthGuard()
+    @AuthGuard()
     public async delete(@Param("id") id: RefType, @Res() res: Response) {
         try {
             await this.postsService.delete(id);

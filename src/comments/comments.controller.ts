@@ -3,12 +3,12 @@ import { AuthService } from "../auth/auth.service";
 import { CommentsService } from "./comments.service";
 import { UsersService } from "../users/users.service";
 import { IComment } from "./interface/comment.interface";
+import { CreateCommentDto } from "./dto/create-comment.dto";
 //import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { QueryService } from "../sup-services/query/query.service";
 import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
 import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req } from "@nestjs/common";
-import { CreateCommentDto } from "./dto/create-comment.dto";
 import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
 
 @Controller("comments")

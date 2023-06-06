@@ -12,7 +12,7 @@ export class UsersController {
     constructor(private readonly usersService: UsersService, private readonly queryService: QueryService) {}
 
     @Post()
-    //@AuthGuard()
+    @AuthGuard()
     public async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
         try {
             const newUser: IUser = await this.usersService.create(createUserDto);
@@ -60,7 +60,7 @@ export class UsersController {
     }
 
     @Delete(":id")
-    //@AuthGuard()
+    @AuthGuard()
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.usersService.delete(id);

@@ -1,11 +1,11 @@
-import { Controller, Get, Param, Delete, Req, Res, HttpStatus, UseGuards } from "@nestjs/common";
-import { SessionsService } from "./sessions.service";
-import { Request, Response } from "express";
-import { UsersService } from "../users/users.service";
-import { AuthService } from "../auth/auth.service";
 import { JWT } from "../const/const";
+import { Request, Response } from "express";
+import { AuthService } from "../auth/auth.service";
+import { SessionsService } from "./sessions.service";
 import { RefreshGuard } from "../auth/refresh.guard";
+import { UsersService } from "../users/users.service";
 import { RequestWithUser } from "../auth/interface/auth.interface";
+import { Controller, Get, Param, Delete, Req, Res, HttpStatus, UseGuards } from "@nestjs/common";
 
 @Controller("security")
 export class SessionsController {
@@ -32,7 +32,7 @@ export class SessionsController {
             }
         }
     }
-
+    @UseGuards(RefreshGuard)
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {

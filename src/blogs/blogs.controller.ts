@@ -1,21 +1,21 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
-import { BlogsService } from "./blogs.service";
-import { CreateBlogDto } from "./dto/create-blog.dto";
-import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
-import { IBlog } from "./interface/blog.interface";
+import { AuthGuard } from "../auth.guard";
 import { Request, Response } from "express";
+import { BlogsService } from "./blogs.service";
+import { TAG_REPOSITORY } from "../const/const";
+import { IBlog } from "./interface/blog.interface";
+import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 import { IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
-import { TAG_REPOSITORY } from "../const/const";
+import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
 import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
-//import { AuthGuard } from "../auth.guard";
+import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
 
 @Controller("blogs")
 export class BlogsController {
     constructor(private readonly blogsService: BlogsService, private readonly queryService: QueryService) {}
     @Post()
-    //@AuthGuard()
+    @AuthGuard()
     public async create(@Body() createBlogDto: CreateBlogDto, @Res() res: Response) {
         try {
             const newBlog: IBlog = await this.blogsService.createBlog(createBlogDto);
@@ -74,7 +74,7 @@ export class BlogsController {
     }
 
     @Put(":id")
-    //@AuthGuard()
+    @AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         try {
             const updateBlog = await this.blogsService.update(id, updateBlogDto);
@@ -90,7 +90,7 @@ export class BlogsController {
     }
 
     @Delete(":id")
-    //@AuthGuard()
+    @AuthGuard()
     public async delete(@Param("id") id: string, @Res() res: Response) {
         try {
             await this.blogsService.delete(id);
@@ -139,7 +139,7 @@ export class BlogsController {
     }
 
     @Post(":blogId/posts")
-    //@AuthGuard()
+    @AuthGuard()
     public async createPostTheBlog(
         @Param("blogId") blogId: string,
         @Body() createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
