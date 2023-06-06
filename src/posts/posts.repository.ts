@@ -21,7 +21,7 @@ export class PostsRepository {
         sortDirection: SortOrder = "desc",
     ): Promise<IPost[]> {
         return this.postModel
-            .find({ blogId })
+            .find({ blogId: blogId })
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit);
