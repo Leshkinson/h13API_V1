@@ -129,7 +129,9 @@ export class UsersService {
             console.log("here 1");
             throw new Error();
         }
-        if (await bcrypt.compare(authDto.password, consideredUser.password)) {
+        const foo = await bcrypt.compare(authDto.password, consideredUser.password);
+        console.log("foo", foo);
+        if (foo) {
             console.log("here 2");
             return consideredUser;
         }
