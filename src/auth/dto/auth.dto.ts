@@ -36,7 +36,7 @@ export class EmailDto implements IEmail {
     @IsNotEmpty()
     @IsEmail()
     @IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
-    @IsNotExistByParamAndConfirm({ message: "Email is confirmed. (This email already confirmed)" })
+    @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
 }
 
