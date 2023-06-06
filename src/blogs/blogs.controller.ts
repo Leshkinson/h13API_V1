@@ -147,12 +147,10 @@ export class BlogsController {
         @Res() res: Response,
     ) {
         try {
-            console.log("blogId", blogId);
             const newPost: IPost | undefined = await this.queryService.createPostForTheBlog(
                 createPostDtoWithoutIdAndName,
                 blogId,
             );
-            console.log("newPost", newPost);
             if (newPost) res.status(HttpStatus.CREATED).json(newPost);
         } catch (error) {
             if (error instanceof Error) {

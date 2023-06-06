@@ -45,7 +45,6 @@ export class QueryService {
         blogId: string,
     ): Promise<IPost> {
         const blog = await this.blogRepository.find(blogId);
-        console.log("blog", blog);
         if (blog) {
             //const blogId = new mongoose.Types.ObjectId((blog?._id).toString());
             const createPostDto = new CreatePostDto(

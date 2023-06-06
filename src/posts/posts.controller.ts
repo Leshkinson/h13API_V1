@@ -1,5 +1,5 @@
 import { RefType } from "mongoose";
-import { AuthGuard } from "../auth.guard";
+//import { AuthGuard } from "../auth.guard";
 import { Request, Response } from "express";
 import { PostsService } from "./posts.service";
 import { PostsRequest } from "./types/post.types";
@@ -52,6 +52,7 @@ export class PostsController {
             pageSize = Number(pageSize ?? 10);
 
             const posts: IPost[] = await this.postsService.findAllPosts(pageNumber, pageSize, sortBy, sortDirection);
+            console.log("posts", posts);
 
             const totalCount: number = await this.postsService.getTotalCountForPosts();
             if (posts) {
