@@ -17,14 +17,6 @@ export class AuthService {
         this.secretRefresh = SETTINGS_TOKEN.JWT_REFRESH_SECRET;
     }
 
-    // public generateAccessToken(payload: object): string {
-    //     return this.jwtService.sign(payload, { secret: this.secretAccess, expiresIn: this.optionsAccess });
-    // }
-    //
-    // public generateRefreshToken(payload: object): string {
-    //     return this.jwtService.sign(payload, { secret: this.secretRefresh, expiresIn: this.optionsRefresh });
-    // }
-
     public async getTokens(
         //todo here shit type
         payload: ({ id: any; email?: undefined; deviceId?: undefined } | { id: any; email: any; deviceId: any })[],

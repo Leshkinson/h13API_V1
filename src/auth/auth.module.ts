@@ -22,7 +22,7 @@ import { MailService } from "../sup-services/application/mailer/mail.service";
         DatabaseModule,
         MailModule,
         PassportModule,
-        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "60s" } }),
+        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "300s" } }),
     ],
     controllers: [AuthController],
     providers: [
