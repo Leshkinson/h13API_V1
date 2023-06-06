@@ -2,17 +2,14 @@ import { IPost } from "./interface/post.interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { Model, RefType, SortOrder } from "mongoose";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { CreatePostDtoWithoutIdAndName } from "./dto/create-post.dto";
+import { CreatePostDto } from "./dto/create-post.dto";
 
 @Injectable()
 export class PostsRepository {
     constructor(@Inject("Post") private readonly postModel: Model<IPost>) {}
 
-    public async create(
-        createPostDtoWithoutIdAndName: CreatePostDtoWithoutIdAndName,
-        blogName: string,
-    ): Promise<IPost> {
-        return this.postModel.create({ ...createPostDtoWithoutIdAndName, blogName });
+    public async create(createPostDto: CreatePostDto, blogName: string): Promise<IPost> {
+        return this.postModel.create({ ...createPostDto, blogName });
     }
 
     public async findAll(

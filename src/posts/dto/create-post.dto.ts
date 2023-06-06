@@ -24,4 +24,8 @@ export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
     @IsNotEmpty()
     @IsBlogIdCheck({ message: "BlogId has incorrect value. (BlogId not found)" })
     readonly blogId: string;
+    constructor(blogId) {
+        super();
+        this.blogId = blogId;
+    }
 }

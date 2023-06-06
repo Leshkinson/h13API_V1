@@ -147,7 +147,7 @@ export class BlogsController {
         @Res() res: Response,
     ) {
         try {
-            console.log(blogId);
+            console.log("blogId", blogId);
             const newPost: IPost | undefined = await this.queryService.createPostForTheBlog(
                 createPostDtoWithoutIdAndName,
                 blogId,
