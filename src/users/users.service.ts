@@ -133,7 +133,7 @@ export class UsersService {
             console.log("here 2");
             return consideredUser;
         }
-
+        console.log("here 3");
         throw new Error();
     }
 

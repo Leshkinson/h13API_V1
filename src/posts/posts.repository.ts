@@ -3,6 +3,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Model, RefType, SortOrder } from "mongoose";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { filter } from "rxjs";
 
 @Injectable()
 export class PostsRepository {
@@ -13,22 +14,16 @@ export class PostsRepository {
     }
 
     public async findAll(
-        blogId?: RefType,
+        blogId?: RefType | object,
         pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
         skip: number = 0,
         sortDirection: SortOrder = "desc",
     ): Promise<IPost[]> {
-        if (blogId) {
-            return this.postModel
-                .find({ blogId })
-                .sort({ [sortBy]: sortDirection })
-                .skip(skip)
-                .limit(limit);
-        }
+        const filter = blogId ? { blogId } : {};
         return this.postModel
-            .find()
+            .find(filter)
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit);

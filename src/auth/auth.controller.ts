@@ -42,6 +42,7 @@ export class AuthController {
                 res.status(HttpStatus.OK).json({
                     accessToken: pairTokens.accessToken,
                 });
+                console.log("here in controller");
                 return;
             }
         } catch (error) {
