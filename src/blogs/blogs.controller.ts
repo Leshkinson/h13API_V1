@@ -9,7 +9,7 @@ import { IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
 import { TAG_REPOSITORY } from "../const/const";
 import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
-import { AuthGuard } from "../auth.guard";
+//import { AuthGuard } from "../auth.guard";
 
 @Controller("blogs")
 export class BlogsController {
@@ -147,10 +147,12 @@ export class BlogsController {
         @Res() res: Response,
     ) {
         try {
+            console.log(blogId);
             const newPost: IPost | undefined = await this.queryService.createPostForTheBlog(
                 createPostDtoWithoutIdAndName,
                 blogId,
             );
+            console.log("newPost", newPost);
             if (newPost) res.status(HttpStatus.CREATED).json(newPost);
         } catch (error) {
             if (error instanceof Error) {
