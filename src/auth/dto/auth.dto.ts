@@ -44,6 +44,7 @@ export class EmailDto implements IEmail {
 export class CodeDto implements ICode {
     @IsString()
     @IsConfirmedEmail({ message: "Code is confirmed. (This code already confirmed)" })
+    @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
     readonly code: string;
 }
 
