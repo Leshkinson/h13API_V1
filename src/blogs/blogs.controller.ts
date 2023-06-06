@@ -122,7 +122,7 @@ export class BlogsController {
             );
             const totalCount: number = await this.queryService.getTotalCountPostsForTheBlog(blogId);
             if (posts) {
-                res.status(HttpStatus.CREATED).json({
+                res.status(HttpStatus.OK).json({
                     pagesCount: Math.ceil(totalCount / pageSize),
                     page: pageNumber,
                     pageSize: pageSize,
@@ -153,7 +153,7 @@ export class BlogsController {
                 blogId,
             );
             console.log("newPost", newPost);
-            if (newPost) res.status(HttpStatus.OK).json(newPost);
+            if (newPost) res.status(HttpStatus.CREATED).json(newPost);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
