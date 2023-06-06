@@ -1,4 +1,4 @@
-import { IAuth, IEmail, INewPassword, IRegistration } from "../interface/auth.interface";
+import { IAuth, ICode, IEmail, INewPassword, IRegistration } from "../interface/auth.interface";
 import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import { IsConfirmedEmail, IsExistByParam, IsNotExistByParamAndConfirm } from "../../pipes/validation.pipes";
 
@@ -26,7 +26,7 @@ export class RegistrationDto implements IRegistration {
     @IsNotEmpty()
     @IsEmail()
     //@Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
-    //@IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
+    @IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
 }
@@ -38,6 +38,12 @@ export class EmailDto implements IEmail {
     @IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
+}
+
+export class CodeDto implements ICode {
+    @IsString()
+    @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
+    readonly code: string;
 }
 
 export class NewPasswordDto implements INewPassword {

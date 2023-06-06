@@ -26,3 +26,7 @@ export interface RequestWithUser extends Request {
         readonly deviceId: string;
     };
 }
+
+export interface ICode {
+    readonly code: string;
+}

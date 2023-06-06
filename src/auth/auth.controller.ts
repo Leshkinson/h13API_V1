@@ -7,7 +7,7 @@ import { TokenMapper } from "./dto/mapper/token-mapper";
 import { RequestWithUser } from "./interface/auth.interface";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
-import { AuthDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
+import { AuthDto, CodeDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
 import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
 
 @Controller("auth")
@@ -43,7 +43,7 @@ export class AuthController {
                 });
                 return;
             }
-            throw new Error();
+            //throw new Error();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -135,9 +135,9 @@ export class AuthController {
     }
 
     @Post("registration-confirmation")
-    public async confirmEmail(@Body() code: any, @Res() res: Response) {
+    public async confirmEmail(@Body() codeDto: CodeDto, @Res() res: Response) {
         try {
-            const confirmed = await this.usersService.confirmUser(code.code);
+            const confirmed = await this.usersService.confirmUser(codeDto.code);
             if (confirmed) {
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
