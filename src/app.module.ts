@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { AppController } from "./app.controller";
 import { UsersModule } from "./users/users.module";
@@ -19,7 +18,6 @@ import { CommentsRepository } from "./comments/comments.repository";
     imports: [BlogsModule, PostsModule, DatabaseModule, CommentsModule, SessionsModule, AuthModule, UsersModule],
     controllers: [AppController],
     providers: [
-        AppService,
         QueryService,
         {
             provide: "blogRepository",
