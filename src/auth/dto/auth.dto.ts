@@ -26,6 +26,7 @@ export class RegistrationDto implements IRegistration {
     @IsNotEmpty()
     @IsEmail()
     //@Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
+    @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
     //@IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
     readonly email: string;
@@ -42,7 +43,7 @@ export class EmailDto implements IEmail {
 
 export class CodeDto implements ICode {
     @IsString()
-    @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
+    @IsConfirmedEmail({ message: "Code is confirmed. (This code already confirmed)" })
     readonly code: string;
 }
 
