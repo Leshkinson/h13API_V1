@@ -123,6 +123,8 @@ export class UsersService {
     public async verifyUser(authDto: IAuth): Promise<IUser> {
         const consideredUser = await this.getUserByParam(authDto.loginOrEmail);
         console.log("consideredUser", consideredUser);
+        console.log("authDto.password", authDto.password);
+        console.log("consideredUser.password", consideredUser.password);
         if (!consideredUser) {
             console.log("here 1");
             throw new Error();
