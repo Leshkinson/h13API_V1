@@ -13,7 +13,7 @@ export class PostsRepository {
     }
 
     public async findAll(
-        blogId?: RefType,
+        blogId?: RefType | NonNullable<unknown>,
         pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
@@ -21,7 +21,7 @@ export class PostsRepository {
         sortDirection: SortOrder = "desc",
     ): Promise<IPost[]> {
         return this.postModel
-            .find({ blogId: blogId })
+            .find({ blogId })
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit);
