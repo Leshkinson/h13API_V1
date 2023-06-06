@@ -22,6 +22,7 @@ export class AuthController {
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
             const user = await this.usersService.verifyUser(authDto);
+            console.log("user", user);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
                     req.ip,
@@ -43,7 +44,6 @@ export class AuthController {
                 });
                 return;
             }
-            //throw new Error();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
