@@ -77,7 +77,7 @@ export class BlogsController {
     //@AuthGuard()
     public async update(@Param("id") id: string, @Res() res: Response, @Body() updateBlogDto: UpdateBlogDto) {
         try {
-            const updateBlog = await this.blogsService.update(+id, updateBlogDto);
+            const updateBlog = await this.blogsService.update(id, updateBlogDto);
             if (updateBlog) {
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
@@ -153,7 +153,7 @@ export class BlogsController {
                 blogId,
             );
             console.log("newPost", newPost);
-            if (newPost) res.status(HttpStatus.CREATED).json(newPost);
+            if (newPost) res.status(HttpStatus.OK).json(newPost);
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.NOT_FOUND);
