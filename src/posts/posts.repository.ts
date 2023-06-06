@@ -13,15 +13,22 @@ export class PostsRepository {
     }
 
     public async findAll(
-        blogId?: RefType | NonNullable<unknown>,
+        blogId?: RefType,
         pageNumber: number = 1,
         limit: number = 10,
         sortBy: string = "createdAt",
         skip: number = 0,
         sortDirection: SortOrder = "desc",
     ): Promise<IPost[]> {
+        if (blogId) {
+            return this.postModel
+                .find({ blogId })
+                .sort({ [sortBy]: sortDirection })
+                .skip(skip)
+                .limit(limit);
+        }
         return this.postModel
-            .find({ blogId })
+            .find()
             .sort({ [sortBy]: sortDirection })
             .skip(skip)
             .limit(limit);

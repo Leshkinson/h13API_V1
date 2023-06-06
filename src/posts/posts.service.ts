@@ -34,7 +34,7 @@ export class PostsService {
     ): Promise<IPost[]> {
         const skip: number = (pageNumber - 1) * pageSize;
 
-        return await this.postRepository.findAll({}, pageNumber, pageSize, sortBy, skip, sortDirection);
+        return await this.postRepository.findAll(null, pageNumber, pageSize, sortBy, skip, sortDirection);
     }
 
     public async findOne(id: RefType): Promise<IPost | undefined> {
