@@ -11,13 +11,13 @@ import { IUser } from "../../users/interface/user.interface";
 import { PostsRepository } from "../../posts/posts.repository";
 import { BlogsRepository } from "../../blogs/blogs.repository";
 import { UsersRepository } from "../../users/users.repository";
+import { CommentModel } from "../../comments/schema/comments.schema";
 import { IComment } from "../../comments/interface/comment.interface";
 import { CommentsRepository } from "../../comments/comments.repository";
 import { LikesStatusCfgValues, LikesStatusType } from "./types/like.type";
-import { CreatePostDto, CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
 import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
 import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
-import { CommentModel } from "../../comments/schema/comments.schema";
+import { CreatePostDto, CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
 
 @Injectable()
 export class QueryService {

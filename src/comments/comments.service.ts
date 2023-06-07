@@ -1,8 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CommentsRepository } from "./comments.repository";
-import { CommentModel } from "./schema/comments.schema";
 import { RefType } from "mongoose";
+import { Inject, Injectable } from "@nestjs/common";
+import { CommentModel } from "./schema/comments.schema";
 import { IComment } from "./interface/comment.interface";
+import { CommentsRepository } from "./comments.repository";
 
 @Injectable()
 export class CommentsService {

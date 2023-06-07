@@ -13,7 +13,7 @@ async function bootstrap() {
     app.enableCors();
     app.useGlobalPipes(
         new ValidationPipe({
-            stopAtFirstError: false,
+            stopAtFirstError: true,
             exceptionFactory: (errors) => {
                 const errorsForResponse = [];
 
