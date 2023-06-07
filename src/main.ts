@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { useContainer } from "class-validator";
 import { HttpExceptionFilter } from "./exception.filter";
 import { BadRequestException, Logger, ValidationPipe } from "@nestjs/common";
+import { TrimStringValidator } from "./pipes/validation.pipes";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -14,6 +15,7 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({
             stopAtFirstError: true,
+            transform: true,
             exceptionFactory: (errors) => {
                 const errorsForResponse = [];
 

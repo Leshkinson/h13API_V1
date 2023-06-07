@@ -10,6 +10,8 @@ import { QueryService } from "../sup-services/query/query.service";
 import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
 import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
 import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus, UsePipes } from "@nestjs/common";
+import { TrimStringValidator } from "../pipes/validation.pipes";
+import { Validate } from "class-validator";
 
 @Controller("blogs")
 export class BlogsController {
