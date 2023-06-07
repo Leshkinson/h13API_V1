@@ -243,7 +243,7 @@ export class PostsController {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     token,
                     postId,
-                    createLikeStatusDto.like,
+                    createLikeStatusDto.likeStatus,
                     TAG_REPOSITORY.PostsRepository,
                 );
                 res.sendStatus(HttpStatus.NO_CONTENT);

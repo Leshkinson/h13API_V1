@@ -171,7 +171,7 @@ export class CommentsController {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     token,
                     commentId,
-                    createLikeStatusDto.like,
+                    createLikeStatusDto.likeStatus,
                     TAG_REPOSITORY.CommentsRepository,
                 );
 

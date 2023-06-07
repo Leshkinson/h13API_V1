@@ -36,5 +36,5 @@ export interface UpgradeLikesWithoutLogin {
 }
 
 export interface ILike {
-    like: LikesStatusType;
+    likeStatus: LikesStatusType;
 }
