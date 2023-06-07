@@ -25,7 +25,8 @@ export class UsersService {
     }
 
     public async create(createUserDto: CreateUserDto) {
-        return this.userRepository.create(createUserDto);
+        const hashPassword = await bcrypt.hash(createUserDto.password, 5);
+        return this.userRepository.create({ ...createUserDto, password: hashPassword });
     }
 
     public async findAllUsers(
@@ -87,7 +88,6 @@ export class UsersService {
         console.log("user", user);
         if (!user) return false;
         if (new Date(user.expirationDate).getTime() > new Date().getTime()) {
-            console.log("here");
             return await this.userRepository.updateUserByConfirmed(user._id.toString());
         }
         await this.userRepository.delete(user._id.toString());
@@ -122,20 +122,12 @@ export class UsersService {
 
     public async verifyUser(authDto: IAuth): Promise<IUser> {
         const consideredUser = await this.getUserByParam(authDto.loginOrEmail);
-        console.log("consideredUser", consideredUser);
-        console.log("authDto.password", authDto.password);
-        console.log("consideredUser.password", consideredUser.password);
         if (!consideredUser) {
-            console.log("here 1");
             throw new Error();
         }
-        const foo = await bcrypt.compare(authDto.password, consideredUser.password);
-        console.log("foo", foo);
-        if (foo) {
-            console.log("here 2");
+        if (await bcrypt.compare(authDto.password, consideredUser.password)) {
             return consideredUser;
         }
-        console.log("here 3");
         throw new Error();
     }
 
