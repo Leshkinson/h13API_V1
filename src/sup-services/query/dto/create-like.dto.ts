@@ -9,7 +9,7 @@ export class CreateLikeStatusDto implements ILike {
     @IsLikeStatusCheck({ message: "LikeStatus does not match type. (LikeStatus have wrong type)" })
     readonly like: LikesStatusType;
 
-    constructor(props: ILike) {
-        this.like = props.like;
-    }
+    // constructor(props: ILike) {
+    //     this.like = props.like;
+    // }
 }
