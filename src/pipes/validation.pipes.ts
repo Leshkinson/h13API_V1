@@ -196,10 +196,20 @@ export function IsBlogIdCheck(validationOptions?: ValidationOptions) {
 @ValidatorConstraint({ name: "trimString", async: false })
 export class TrimStringValidator implements ValidatorConstraintInterface {
     validate(value: any, args: ValidationArguments) {
-        if (typeof value !== "string") {
-            return true;
+        // console.log({ args });
+        // console.log({ value });
+        try {
+            if (!args.object.hasOwnProperty(args.property)) {
+                throw new Error();
+            }
+            if (typeof value !== "string") {
+                return true;
+            }
+            return value.trim() === value;
+        } catch (error) {
+            if (error instanceof Error) {
+                return false;
+            }
         }
-
-        return value.trim() === value;
     }
 }
