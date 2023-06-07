@@ -17,6 +17,7 @@ import { LikesStatusCfgValues, LikesStatusType } from "./types/like.type";
 import { CreatePostDto, CreatePostDtoWithoutIdAndName } from "../../posts/dto/create-post.dto";
 import { JWT, LIKE_STATUS, TagRepositoryTypeCfgValues } from "../../const/const";
 import { ILikeStatus, ILikeStatusWithoutId, UpgradeLikes } from "./interface/like.interface";
+import { CommentModel } from "../../comments/schema/comments.schema";
 
 @Injectable()
 export class QueryService {
@@ -32,6 +33,7 @@ export class QueryService {
         this.blogRepository = new BlogsRepository(BlogModel);
         this.likeRepository = new LikesRepository(LikeModel);
         this.userRepository = new UsersRepository(UserModel);
+        this.commentRepository = new CommentsRepository(CommentModel);
     }
 
     public async getTotalCountPostsForTheBlog(blogId: RefType): Promise<number> {
