@@ -1,6 +1,11 @@
 import { IAuth, ICode, IEmail, INewPassword, IRegistration } from "../interface/auth.interface";
-import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import { IsConfirmedEmail, IsExistByParam, IsNotExistByParamAndConfirm } from "../../pipes/validation.pipes";
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength, Validate } from "class-validator";
+import {
+    IsConfirmedEmail,
+    IsExistByParam,
+    IsNotExistByParamAndConfirm,
+    TrimStringValidator,
+} from "../../pipes/validation.pipes";
 
 export class AuthDto implements IAuth {
     readonly loginOrEmail: string;
@@ -14,12 +19,14 @@ export class RegistrationDto implements IRegistration {
     @MaxLength(10)
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly login: string;
 
     @MinLength(6)
     @MaxLength(20)
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly password: string;
 
     //@Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
@@ -29,6 +36,7 @@ export class RegistrationDto implements IRegistration {
     @IsEmail()
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly email: string;
 }
 
@@ -38,6 +46,7 @@ export class EmailDto implements IEmail {
     @IsEmail()
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly email: string;
 }
 
@@ -46,6 +55,7 @@ export class CodeDto implements ICode {
     @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly code: string;
 }
 
@@ -54,11 +64,13 @@ export class NewPasswordDto implements INewPassword {
     @MaxLength(20)
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly newPassword: string;
 
     @IsNotExistByParamAndConfirm({ message: "Code is confirmed. (This code already confirmed)" })
     @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
     @IsString()
     @IsNotEmpty()
+    @Validate(TrimStringValidator)
     readonly recoveryCode: string;
 }

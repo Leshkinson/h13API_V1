@@ -9,7 +9,7 @@ import { IPost } from "../posts/interface/post.interface";
 import { QueryService } from "../sup-services/query/query.service";
 import { BlogsRequest, BlogsRequestWithoutSNT } from "./types/blog.type";
 import { CreatePostDtoWithoutIdAndName } from "../posts/dto/create-post.dto";
-import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus } from "@nestjs/common";
+import { Controller, Get, Post, Body, Put, Param, Delete, Req, Res, HttpStatus, UsePipes } from "@nestjs/common";
 
 @Controller("blogs")
 export class BlogsController {

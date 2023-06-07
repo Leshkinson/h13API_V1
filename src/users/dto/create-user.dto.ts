@@ -3,22 +3,22 @@ import { IsExistByParam } from "../../pipes/validation.pipes";
 import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto implements ICreateUserDto {
-    @IsString()
-    @IsNotEmpty()
+    @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
+    @Matches(/^[a-zA-Z0-9_-]*$/)
     @MinLength(3)
     @MaxLength(10)
-    @Matches(/^[a-zA-Z0-9_-]*$/)
-    @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
+    @IsString()
+    @IsNotEmpty()
     readonly login: string;
 
     @MinLength(6)
     @MaxLength(20)
     readonly password: string;
 
-    @IsString()
-    //@IsNotEmpty()
-    @MaxLength(100)
-    @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
     @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
+    @Matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    @MaxLength(100)
+    @IsString()
+    @IsNotEmpty()
     readonly email: string;
 }

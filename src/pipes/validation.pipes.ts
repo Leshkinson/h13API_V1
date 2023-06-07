@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable, Inject, PipeTransform, ArgumentMetadata, applyDecorators, Param } from "@nestjs/common";
 import { UserModel } from "../users/schema/user.schema";
 import { BlogModel } from "../blogs/schema/blog.schema";
 import { BlogsRepository } from "../blogs/blogs.repository";
@@ -35,7 +35,7 @@ export class _IsExistByParam implements ValidatorConstraintInterface {
 }
 
 export function IsExistByParam(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return (object: any, propertyName: string) => {
         registerDecorator({
             name: "IsExistByParam",
             target: object.constructor,
@@ -69,7 +69,7 @@ export class _IsNotExistByParamAndConfirm implements ValidatorConstraintInterfac
 }
 
 export function IsNotExistByParamAndConfirm(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return (object: any, propertyName: string) => {
         registerDecorator({
             name: "IsNotExistByParamAndConfirm",
             target: object.constructor,
@@ -104,7 +104,7 @@ export class _IsConfirmedEmail implements ValidatorConstraintInterface {
 }
 
 export function IsConfirmedEmail(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return (object: any, propertyName: string) => {
         registerDecorator({
             name: "IsConfirmedEmail",
             target: object.constructor,
@@ -134,7 +134,7 @@ export class _IsLikeStatusCheck implements ValidatorConstraintInterface {
 }
 
 export function IsLikeStatusCheck(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return (object: any, propertyName: string) => {
         registerDecorator({
             name: "IsLikeStatusCheck",
             target: object.constructor,
@@ -169,7 +169,7 @@ export class _IsBlogIdCheck implements ValidatorConstraintInterface {
 }
 
 export function IsBlogIdCheck(validationOptions?: ValidationOptions) {
-    return function (object: any, propertyName: string) {
+    return (object: any, propertyName: string) => {
         registerDecorator({
             name: "IsBlogIdCheck",
             target: object.constructor,
@@ -178,4 +178,28 @@ export function IsBlogIdCheck(validationOptions?: ValidationOptions) {
             validator: _IsBlogIdCheck,
         });
     };
+}
+
+// //@ValidatorConstraint({ name: "Trim", async: true })
+// @Injectable()
+// export class Trim implements PipeTransform<string, string> {
+//     transform(value: string, metadata: ArgumentMetadata): string {
+//         console.log({ metadata });
+//         console.log("VAlue", value);
+//         if (typeof value !== "string") {
+//             return value;
+//         }
+//         return value.trim();
+//     }
+// }
+
+@ValidatorConstraint({ name: "trimString", async: false })
+export class TrimStringValidator implements ValidatorConstraintInterface {
+    validate(value: any, args: ValidationArguments) {
+        if (typeof value !== "string") {
+            return true;
+        }
+
+        return value.trim() === value;
+    }
 }
