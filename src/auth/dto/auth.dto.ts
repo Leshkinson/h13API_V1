@@ -8,56 +8,57 @@ export class AuthDto implements IAuth {
 }
 
 export class RegistrationDto implements IRegistration {
-    @IsString()
-    @IsNotEmpty()
+    @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
+    @Matches(/^[a-zA-Z0-9_-]*$/)
     @MinLength(3)
     @MaxLength(10)
-    @Matches(/^[a-zA-Z0-9_-]*$/)
-    @IsExistByParam({ message: "Login is exist. (This login already exists enter another login)" })
+    @IsString()
+    @IsNotEmpty()
     readonly login: string;
 
-    @IsString()
-    @IsNotEmpty()
     @MinLength(6)
     @MaxLength(20)
-    readonly password: string;
-
     @IsString()
     @IsNotEmpty()
-    @IsEmail()
+    readonly password: string;
+
     //@Matches(/^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/)
-    @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
     //@IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
+    @IsExistByParam({ message: "Email is exist. (This email already exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
+    @IsEmail()
+    @IsString()
+    @IsNotEmpty()
     readonly email: string;
 }
 
 export class EmailDto implements IEmail {
-    @IsString()
-    @IsNotEmpty()
-    @IsEmail()
     @IsNotExistByParamAndConfirm({ message: "Email is not exist. (This email not exists enter another email)" })
     @IsConfirmedEmail({ message: "Email is confirmed. (This email already confirmed)" })
+    @IsEmail()
+    @IsString()
+    @IsNotEmpty()
     readonly email: string;
 }
 
 export class CodeDto implements ICode {
-    @IsString()
     @IsConfirmedEmail({ message: "Code is confirmed. (This code already confirmed)" })
     @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
+    @IsString()
+    @IsNotEmpty()
     readonly code: string;
 }
 
 export class NewPasswordDto implements INewPassword {
-    @IsString()
-    @IsNotEmpty()
     @MinLength(6)
     @MaxLength(20)
-    readonly newPassword: string;
-
     @IsString()
     @IsNotEmpty()
+    readonly newPassword: string;
+
     @IsNotExistByParamAndConfirm({ message: "Code is confirmed. (This code already confirmed)" })
     @IsNotExistByParamAndConfirm({ message: "Code is not exist. (This Code not exists)" })
+    @IsString()
+    @IsNotEmpty()
     readonly recoveryCode: string;
 }

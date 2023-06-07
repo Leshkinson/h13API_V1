@@ -3,19 +3,19 @@ import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
 
 export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAndName {
+    @MaxLength(30)
     @IsString()
     @IsNotEmpty()
-    @MaxLength(30)
     readonly title: string;
 
+    @MaxLength(100)
     @IsString()
     @IsNotEmpty()
-    @MaxLength(100)
     readonly shortDescription: string;
 
+    @MaxLength(1000)
     @IsString()
     @IsNotEmpty()
-    @MaxLength(1000)
     readonly content: string;
     constructor(title, shortDescription, content) {
         this.title = title;
@@ -25,9 +25,9 @@ export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAnd
 }
 
 export class CreatePostDto extends CreatePostDtoWithoutIdAndName {
+    @IsBlogIdCheck({ message: "BlogId has incorrect value. (BlogId not found)" })
     @IsString()
     @IsNotEmpty()
-    @IsBlogIdCheck({ message: "BlogId has incorrect value. (BlogId not found)" })
     readonly blogId: string;
     constructor(title, shortDescription, content, blogId) {
         super(title, shortDescription, content);
