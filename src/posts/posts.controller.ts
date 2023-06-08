@@ -5,6 +5,7 @@ import { PostsService } from "./posts.service";
 import { PostsRequest } from "./types/post.types";
 import { AuthService } from "../auth/auth.service";
 import { IPost } from "./interface/post.interface";
+import { AccessGuard } from "../auth/access.guard";
 import { UsersService } from "../users/users.service";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
@@ -12,12 +13,11 @@ import { CommentsRequest } from "../comments/types/comment.type";
 import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { QueryService } from "../sup-services/query/query.service";
 import { IComment } from "../comments/interface/comment.interface";
+import { RequestWithUser } from "../auth/interface/auth.interface";
 import { CreateCommentDto } from "../comments/dto/create-comment.dto";
 import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
 import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
 import { Controller, Get, Post, Body, Put, Param, Delete, Res, HttpStatus, Req, UseGuards } from "@nestjs/common";
-import { AccessGuard } from "../auth/access.guard";
-import { RequestWithUser } from "../auth/interface/auth.interface";
 
 @Controller("posts")
 export class PostsController {
@@ -135,7 +135,6 @@ export class PostsController {
         try {
             const request = req as RequestWithUser;
             const { userId } = request.user;
-            //const token = req.headers.authorization?.split(" ")[1];
             if (userId) {
                 const newComment: IComment | undefined = await this.queryService.createCommentForThePost(
                     postId,
@@ -245,7 +244,6 @@ export class PostsController {
         try {
             const request = req as RequestWithUser;
             const { userId } = request.user;
-            //const token = req.headers.authorization?.split(" ")[1];
             if (userId) {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     userId,

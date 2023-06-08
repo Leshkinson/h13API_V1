@@ -214,7 +214,6 @@ export class QueryService {
         likeStatus: LikesStatusType,
         tag: TagRepositoryTypeCfgValues,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
-        //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
         const user = await this.userRepository.find(userId);
         let commentOrPost: IPost | IComment | undefined;
         if (tag === "PostsRepository") {
@@ -256,7 +255,6 @@ export class QueryService {
     public async createCommentForThePost(postId: RefType, content: string, userId: string): Promise<IComment> {
         const post = await this.postRepository.find(postId);
         if (post) {
-            //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
             const user = await this.userRepository.find(userId);
             if (user) {
                 return await this.commentRepository.create(content, postId, userId, user.login);

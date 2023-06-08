@@ -1,17 +1,16 @@
 import { Response, Request } from "express";
+import { AccessGuard } from "../auth/access.guard";
 import { AuthService } from "../auth/auth.service";
 import { CommentsService } from "./comments.service";
 import { UsersService } from "../users/users.service";
 import { IComment } from "./interface/comment.interface";
 import { CreateCommentDto } from "./dto/create-comment.dto";
-//import { UpdateCommentDto } from "./dto/update-comment.dto";
 import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { QueryService } from "../sup-services/query/query.service";
-import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
-import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req, UseGuards } from "@nestjs/common";
-import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
-import { AccessGuard } from "../auth/access.guard";
 import { RequestWithUser } from "../auth/interface/auth.interface";
+import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
+import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
+import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req, UseGuards } from "@nestjs/common";
 
 @Controller("comments")
 export class CommentsController {
@@ -82,9 +81,7 @@ export class CommentsController {
         try {
             const request = req as RequestWithUser;
             const { userId } = request.user;
-            //const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (userId) {
-                //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
                 const user = await this.usersService.getUserById(userId);
                 const comment: IComment | undefined = await this.commentsService.getOne(commentId);
                 if (!user || !comment) {
@@ -122,9 +119,7 @@ export class CommentsController {
         try {
             const request = req as RequestWithUser;
             const { userId } = request.user;
-            //const token: string | undefined = req.headers.authorization?.split(" ")[1];
             if (userId) {
-                //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
                 const user = await this.usersService.getUserById(userId);
 
                 if (!user) {
@@ -174,7 +169,6 @@ export class CommentsController {
         try {
             const request = req as RequestWithUser;
             const { userId } = request.user;
-            //const token = req.headers.authorization?.split(" ")[1];
             if (userId) {
                 await this.queryService.setUpLikeOrDislikeStatus(
                     userId,
