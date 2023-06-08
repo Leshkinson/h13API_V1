@@ -71,7 +71,7 @@ export class CommentsController {
             }
         }
     }
-
+    @UseGuards(AccessGuard)
     @Put(":commentId")
     async update(
         @Param("commentId") commentId: string,
@@ -80,10 +80,12 @@ export class CommentsController {
         @Body() createCommentDto: CreateCommentDto,
     ) {
         try {
-            const token: string | undefined = req.headers.authorization?.split(" ")[1];
-            if (token) {
-                const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
-                const user = await this.usersService.getUserById(payload.id);
+            const request = req as RequestWithUser;
+            const { userId } = request.user;
+            //const token: string | undefined = req.headers.authorization?.split(" ")[1];
+            if (userId) {
+                //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
+                const user = await this.usersService.getUserById(userId);
                 const comment: IComment | undefined = await this.commentsService.getOne(commentId);
                 if (!user || !comment) {
                     res.sendStatus(HttpStatus.NOT_FOUND);
