@@ -18,10 +18,9 @@ export interface ICreatePostDtoWithoutIdAndName {
     content: string;
 }
 
-// export interface ICreatePostDto {
-//     title: string;
-//     shortDescription: string;
-//     content: string;
-//     blogId: string;
-//     blogName: string;
-// }
+export interface ICreatePostDto {
+    title: string;
+    shortDescription: string;
+    content: string;
+    blogId: string;
+}

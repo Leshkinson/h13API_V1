@@ -1,9 +1,8 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreatePostDto } from "./create-post.dto";
+import { ICreatePostDto } from "../interface/post.interface";
 import { IsNotEmpty, IsString, MaxLength, Validate } from "class-validator";
 import { IsBlogIdCheck, TrimStringValidator } from "../../pipes/validation.pipes";
 
-export class UpdatePostDto extends PartialType(CreatePostDto) {
+export class UpdatePostDto implements ICreatePostDto {
     @MaxLength(30)
     @IsString()
     @IsNotEmpty()

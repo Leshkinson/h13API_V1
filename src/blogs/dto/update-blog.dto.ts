@@ -1,8 +1,6 @@
-// import { PartialType } from "@nestjs/mapped-types";
-// import { CreateBlogDto } from "./create-blog.dto";
-import { IsNotEmpty, IsString, Matches, MaxLength, Validate } from "class-validator";
-import { TrimStringValidator } from "../../pipes/validation.pipes";
 import { ICreateBlogDto } from "../interface/blog.interface";
+import { TrimStringValidator } from "../../pipes/validation.pipes";
+import { IsNotEmpty, IsString, Matches, MaxLength, Validate } from "class-validator";
 
 export class UpdateBlogDto implements ICreateBlogDto {
     @MaxLength(15)
