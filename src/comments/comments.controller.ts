@@ -116,14 +116,16 @@ export class CommentsController {
             }
         }
     }
-
+    @UseGuards(AccessGuard)
     @Delete(":commentId")
     async delete(@Param("commentId") id: string, @Req() req: Request, @Res() res: Response) {
         try {
-            const token: string | undefined = req.headers.authorization?.split(" ")[1];
-            if (token) {
-                const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
-                const user = await this.usersService.getUserById(payload.id);
+            const request = req as RequestWithUser;
+            const { userId } = request.user;
+            //const token: string | undefined = req.headers.authorization?.split(" ")[1];
+            if (userId) {
+                //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
+                const user = await this.usersService.getUserById(userId);
 
                 if (!user) {
                     res.sendStatus(HttpStatus.NOT_FOUND);

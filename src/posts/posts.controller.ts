@@ -133,14 +133,14 @@ export class PostsController {
         @Res() res: Response,
     ) {
         try {
-            // const request = req as RequestWithUser;
-            // const { userId } = request.user;
-            const token = req.headers.authorization?.split(" ")[1];
-            if (token) {
+            const request = req as RequestWithUser;
+            const { userId } = request.user;
+            //const token = req.headers.authorization?.split(" ")[1];
+            if (userId) {
                 const newComment: IComment | undefined = await this.queryService.createCommentForThePost(
                     postId,
                     createCommentDto.content,
-                    token,
+                    userId,
                 );
                 if (newComment) {
                     res.status(HttpStatus.CREATED).json(newComment);
