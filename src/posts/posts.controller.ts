@@ -124,7 +124,7 @@ export class PostsController {
             }
         }
     }
-
+    @UseGuards(AccessGuard)
     @Post(":postId/comments")
     public async createCommentThePost(
         @Param("postId") postId: string,
@@ -133,6 +133,8 @@ export class PostsController {
         @Res() res: Response,
     ) {
         try {
+            // const request = req as RequestWithUser;
+            // const { userId } = request.user;
             const token = req.headers.authorization?.split(" ")[1];
             if (token) {
                 const newComment: IComment | undefined = await this.queryService.createCommentForThePost(
