@@ -250,7 +250,7 @@ export class PostsController {
             }
         } catch (error) {
             if (error instanceof Error) {
-                res.sendStatus(HttpStatus.NOT_FOUND);
+                res.sendStatus(HttpStatus.UNAUTHORIZED);
                 console.log(error.message);
             }
         }
