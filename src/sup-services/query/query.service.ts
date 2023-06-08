@@ -209,13 +209,13 @@ export class QueryService {
     }
 
     public async setUpLikeOrDislikeStatus(
-        token: string,
+        userId: string,
         commentOrPostId: string,
         likeStatus: LikesStatusType,
         tag: TagRepositoryTypeCfgValues,
     ): Promise<ILikeStatus | ILikeStatusWithoutId | null> {
-        const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
-        const user = await this.userRepository.find(payload.id);
+        //const payload = (await this.authService.getPayloadByAccessToken(token)) as JWT;
+        const user = await this.userRepository.find(userId);
         let commentOrPost: IPost | IComment | undefined;
         if (tag === "PostsRepository") {
             commentOrPost = await this.postRepository.find(commentOrPostId);

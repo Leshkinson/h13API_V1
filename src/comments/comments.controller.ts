@@ -8,8 +8,10 @@ import { CreateCommentDto } from "./dto/create-comment.dto";
 import { JWT, LIKE_STATUS, TAG_REPOSITORY } from "../const/const";
 import { QueryService } from "../sup-services/query/query.service";
 import { LikesStatusCfgValues } from "../sup-services/query/types/like.type";
-import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req } from "@nestjs/common";
+import { Controller, Get, Body, Param, Delete, Put, Res, HttpStatus, Req, UseGuards } from "@nestjs/common";
 import { CreateLikeStatusDto } from "../sup-services/query/dto/create-like.dto";
+import { AccessGuard } from "../auth/access.guard";
+import { RequestWithUser } from "../auth/interface/auth.interface";
 
 @Controller("comments")
 export class CommentsController {
@@ -157,7 +159,7 @@ export class CommentsController {
             }
         }
     }
-
+    @UseGuards(AccessGuard)
     @Put(":commentId/like-status")
     async sendLikeOrDislikeStatus(
         @Param("commentId") commentId: string,
@@ -166,10 +168,12 @@ export class CommentsController {
         @Body() createLikeStatusDto: CreateLikeStatusDto,
     ) {
         try {
-            const token = req.headers.authorization?.split(" ")[1];
-            if (token) {
+            const request = req as RequestWithUser;
+            const { userId } = request.user;
+            //const token = req.headers.authorization?.split(" ")[1];
+            if (userId) {
                 await this.queryService.setUpLikeOrDislikeStatus(
-                    token,
+                    userId,
                     commentId,
                     createLikeStatusDto.likeStatus,
                     TAG_REPOSITORY.CommentsRepository,
