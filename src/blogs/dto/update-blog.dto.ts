@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, Matches, MaxLength, Validate } from "class-valida
 import { TrimStringValidator } from "../../pipes/validation.pipes";
 import { ICreateBlogDto } from "../interface/blog.interface";
 
-export class UpdateBlogDto implements ICreateBlogDto{
+export class UpdateBlogDto implements ICreateBlogDto {
     @MaxLength(15)
     @IsString()
     @IsNotEmpty()
