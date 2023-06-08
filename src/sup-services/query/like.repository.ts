@@ -1,7 +1,7 @@
 import { Model, RefType } from "mongoose";
 import { Inject, Injectable } from "@nestjs/common";
-import { ILikeStatus, ILikeStatusWithoutId } from "./interface/like.interface";
 import { LikesStatusType } from "./types/like.type";
+import { ILikeStatus, ILikeStatusWithoutId } from "./interface/like.interface";
 
 @Injectable()
 export class LikesRepository {

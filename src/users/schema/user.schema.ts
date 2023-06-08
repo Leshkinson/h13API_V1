@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IUser } from "../interface/user.interface";
+
 export const UserSchema = new Schema(
     {
         login: { type: "string", required: true },

@@ -1,15 +1,15 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UsersRepository } from "./users.repository";
-import { RefType, SortOrder } from "mongoose";
-import { IUser } from "./interface/user.interface";
-import { UserModel } from "./schema/user.schema";
-import * as bcrypt from "bcrypt";
 import { uuid } from "uuidv4";
+import * as bcrypt from "bcrypt";
 import { JwtPayload } from "jsonwebtoken";
+import { RefType, SortOrder } from "mongoose";
+import { UserModel } from "./schema/user.schema";
+import { IUser } from "./interface/user.interface";
+import { Inject, Injectable } from "@nestjs/common";
+import { UsersRepository } from "./users.repository";
+import { CreateUserDto } from "./dto/create-user.dto";
 import { IAuth } from "../auth/interface/auth.interface";
-import { EmailDto, NewPasswordDto, RegistrationDto } from "../auth/dto/auth.dto";
 import { MailService } from "../sup-services/application/mailer/mail.service";
+import { EmailDto, NewPasswordDto, RegistrationDto } from "../auth/dto/auth.dto";
 import {
     passwordConfirmedTemplate,
     userInvitationTemplate,
@@ -83,9 +83,7 @@ export class UsersService {
     }
 
     public async confirmUser(code: string): Promise<boolean | null | IUser> {
-        console.log("code in service", code);
         const user = await this.getUserByParam(code);
-        console.log("user", user);
         if (!user) return false;
         if (new Date(user.expirationDate).getTime() > new Date().getTime()) {
             return await this.userRepository.updateUserByConfirmed(user._id.toString());

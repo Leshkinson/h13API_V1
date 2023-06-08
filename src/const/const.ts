@@ -1,5 +1,5 @@
-import { LikesStatusType } from "../sup-services/query/types/like.type";
 import { JwtPayload } from "jsonwebtoken";
+import { LikesStatusType } from "../sup-services/query/types/like.type";
 
 export const LIKE_STATUS: LikesStatusType = {
     LIKE: "Like",

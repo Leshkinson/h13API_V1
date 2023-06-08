@@ -1,4 +1,4 @@
-import { Injectable, Inject, PipeTransform, ArgumentMetadata, applyDecorators, Param } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { UserModel } from "../users/schema/user.schema";
 import { BlogModel } from "../blogs/schema/blog.schema";
 import { BlogsRepository } from "../blogs/blogs.repository";
@@ -180,29 +180,11 @@ export function IsBlogIdCheck(validationOptions?: ValidationOptions) {
     };
 }
 
-// //@ValidatorConstraint({ name: "Trim", async: true })
-// @Injectable()
-// export class Trim implements PipeTransform<string, string> {
-//     transform(value: string, metadata: ArgumentMetadata): string {
-//         console.log({ metadata });
-//         console.log("VAlue", value);
-//         if (typeof value !== "string") {
-//             return value;
-//         }
-//         return value.trim();
-//     }
-// }
-
 @ValidatorConstraint({ name: "trimString", async: false })
 export class TrimStringValidator implements ValidatorConstraintInterface {
     validate(value: any, args: ValidationArguments) {
-        console.log({ args });
-        console.log({ value });
-        //console.log(args.object);
-        //console.log(args.property);
         try {
             if (!args.object.hasOwnProperty(args.property)) {
-                console.log("here");
                 throw new Error();
             }
             if (typeof value !== "string") {

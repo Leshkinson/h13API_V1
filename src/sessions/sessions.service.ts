@@ -1,10 +1,10 @@
+import { uuid } from "uuidv4";
 import { Inject, Injectable } from "@nestjs/common";
+import { SessionModel } from "./schema/session.schema";
+import { ISession } from "./interface/session.interface";
+import { SessionsRepository } from "./sessions.repository";
 // import { CreateSessionDto } from "./dto/create-session.dto";
 // import { UpdateSessionDto } from "./dto/update-session.dto";
-import { SessionsRepository } from "./sessions.repository";
-import { ISession } from "./interface/session.interface";
-import { SessionModel } from "./schema/session.schema";
-import { uuid } from "uuidv4";
 
 @Injectable()
 export class SessionsService {

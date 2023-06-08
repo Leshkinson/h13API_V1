@@ -1,5 +1,5 @@
-import * as mongoose from "mongoose";
 import { Schema } from "mongoose";
+import * as mongoose from "mongoose";
 import { IPost } from "../interface/post.interface";
 
 export const PostSchema = new Schema(

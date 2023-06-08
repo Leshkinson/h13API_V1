@@ -9,8 +9,4 @@ export class CreateCommentDto implements IContent {
     @IsNotEmpty()
     @Validate(TrimStringValidator)
     readonly content: string;
-
-    // constructor(props: IContent) {
-    //     this.content = props.content;
-    // }
 }

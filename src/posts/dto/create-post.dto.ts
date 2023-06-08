@@ -1,6 +1,6 @@
-import { IsBlogIdCheck, TrimStringValidator } from "../../pipes/validation.pipes";
 import { IsNotEmpty, IsString, MaxLength, Validate } from "class-validator";
 import { ICreatePostDtoWithoutIdAndName } from "../interface/post.interface";
+import { IsBlogIdCheck, TrimStringValidator } from "../../pipes/validation.pipes";
 
 export class CreatePostDtoWithoutIdAndName implements ICreatePostDtoWithoutIdAndName {
     @MaxLength(30)

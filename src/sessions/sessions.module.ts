@@ -10,8 +10,8 @@ import { SessionsController } from "./sessions.controller";
 import { UsersRepository } from "../users/users.repository";
 import { DatabaseModule } from "../database/database.module";
 import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
-import { MailService } from "../sup-services/application/mailer/mail.service";
 import { MailModule } from "../sup-services/application/mailer/mail.module";
+import { MailService } from "../sup-services/application/mailer/mail.service";
 
 @Module({
     imports: [DatabaseModule, MailModule],

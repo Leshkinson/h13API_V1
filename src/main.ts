@@ -1,10 +1,9 @@
 import { AppModule } from "./app.module";
-import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
+import { NestFactory } from "@nestjs/core";
 import { useContainer } from "class-validator";
 import { HttpExceptionFilter } from "./exception.filter";
 import { BadRequestException, Logger, ValidationPipe } from "@nestjs/common";
-import { TrimStringValidator } from "./pipes/validation.pipes";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -15,8 +14,6 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({
             stopAtFirstError: true,
-            // whitelist: true,
-            // forbidNonWhitelisted: true,
             exceptionFactory: (errors) => {
                 const errorsForResponse = [];
 

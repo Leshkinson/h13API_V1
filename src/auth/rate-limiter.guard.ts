@@ -1,12 +1,10 @@
-import { CanActivate, ExecutionContext, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { Observable } from "rxjs";
-import { Request, Response } from "express";
 import { Cache } from "cache-manager";
+import { Request, Response } from "express";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { log } from "util";
+import { CanActivate, ExecutionContext, HttpStatus, Inject, Injectable } from "@nestjs/common";
 
 let count = 1;
-//const myCache = new NodeCache();
 
 @Injectable()
 export class _RateLimiter implements CanActivate {

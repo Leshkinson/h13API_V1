@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
-import { ISession } from "./interface/session.interface";
 import { Inject } from "@nestjs/common";
+import { ISession } from "./interface/session.interface";
 
 export class SessionsRepository {
     constructor(@Inject("SESSION_MODEL") private readonly sessionModel: Model<ISession>) {}

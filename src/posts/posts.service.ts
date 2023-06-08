@@ -1,13 +1,13 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CreatePostDto } from "./dto/create-post.dto";
-import { UpdatePostDto } from "./dto/update-post.dto";
-import { PostsRepository } from "./posts.repository";
+import { RefType, SortOrder } from "mongoose";
 import { PostModel } from "./schema/post.schema";
 import { IPost } from "./interface/post.interface";
-import { RefType, SortOrder } from "mongoose";
+import { Inject, Injectable } from "@nestjs/common";
+import { PostsRepository } from "./posts.repository";
+import { CreatePostDto } from "./dto/create-post.dto";
+import { UpdatePostDto } from "./dto/update-post.dto";
+import { BlogModel } from "../blogs/schema/blog.schema";
 import { IBlog } from "../blogs/interface/blog.interface";
 import { BlogsRepository } from "../blogs/blogs.repository";
-import { BlogModel } from "../blogs/schema/blog.schema";
 
 @Injectable()
 export class PostsService {

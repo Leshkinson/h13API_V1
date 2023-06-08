@@ -1,5 +1,5 @@
-import { LikeInfo } from "../../sup-services/query/interface/like.interface";
 import mongoose from "mongoose";
+import { LikeInfo } from "../../sup-services/query/interface/like.interface";
 
 export interface IContent {
     content: string;

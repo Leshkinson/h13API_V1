@@ -1,10 +1,10 @@
-import { Controller, Delete, HttpStatus, Res } from "@nestjs/common";
+import { Response } from "express";
 import { BlogsService } from "./blogs/blogs.service";
 import { UsersService } from "./users/users.service";
 import { PostsService } from "./posts/posts.service";
 import { CommentsService } from "./comments/comments.service";
 import { QueryService } from "./sup-services/query/query.service";
-import { Response } from "express";
+import { Controller, Delete, HttpStatus, Res } from "@nestjs/common";
 
 @Controller()
 export class AppController {

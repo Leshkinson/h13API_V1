@@ -36,9 +36,6 @@ export class SessionsController {
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
-            // const { refreshToken } = req.cookies;
-            //
-            // const payload = await this.authService.getPayloadFromToken(refreshToken);
             const request = req as RequestWithUser;
             const { email, deviceId } = request.user;
             if (!email && !deviceId) {
