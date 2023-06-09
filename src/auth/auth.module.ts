@@ -23,7 +23,7 @@ import { CacheModule } from "@nestjs/cache-manager";
         DatabaseModule,
         MailModule,
         PassportModule,
-        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "300s" } }),
+        JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "20s" } }),
         CacheModule.register(),
     ],
     controllers: [AuthController],

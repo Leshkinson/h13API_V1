@@ -23,7 +23,6 @@ export class AuthController {
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
             const user = await this.usersService.verifyUser(authDto);
-            console.log("user", user);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
                     req.ip,
@@ -58,9 +57,11 @@ export class AuthController {
     public async logout(@Req() req: Request, @Res() res: Response) {
         try {
             const request = req as RequestWithUser;
-            const { email, deviceId } = request.user;
+            const { refreshToken } = request.cookies;
+            const payload = await this.authService.getPayloadFromToken(refreshToken);
+            const { deviceId } = request.user;
             //todo change on search by id
-            const user = await this.usersService.getUserByParam(email);
+            const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
                 await this.sessionsService.deleteTheSession(String(user._id), deviceId);
                 res.clearCookie("refreshToken");
@@ -78,8 +79,10 @@ export class AuthController {
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
             const request = req as RequestWithUser;
-            const { email, deviceId } = request.user;
-            const user = await this.usersService.getUserByParam(email);
+            const { deviceId } = request.user;
+            const { refreshToken } = request.cookies;
+            const payload = await this.authService.getPayloadFromToken(refreshToken);
+            const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
                 const updateSessionDevice = (await this.sessionsService.updateSession(deviceId)) as ISession;
                 const newPairTokens = await this.authService.getTokens(
