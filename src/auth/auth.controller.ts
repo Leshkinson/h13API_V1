@@ -9,6 +9,7 @@ import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
 import { AuthDto, CodeDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
 import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { RateLimiterGuard } from "./rate-limiter.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
         private readonly usersService: UsersService,
         private readonly sessionsService: SessionsService,
     ) {}
-
+    @RateLimiterGuard()
     @Post("login")
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
@@ -120,7 +121,7 @@ export class AuthController {
             }
         }
     }
-
+    @RateLimiterGuard()
     @Post("registration")
     public async registration(@Body() registrationDto: RegistrationDto, @Req() req: Request, @Res() res: Response) {
         try {
@@ -134,7 +135,7 @@ export class AuthController {
             }
         }
     }
-
+    @RateLimiterGuard()
     @Post("registration-confirmation")
     public async confirmEmail(@Body() codeDto: CodeDto, @Res() res: Response) {
         try {
@@ -150,7 +151,7 @@ export class AuthController {
             }
         }
     }
-
+    @RateLimiterGuard()
     @Post("registration-email-resending")
     public async resendConfirm(@Body() emailDto: EmailDto, @Res() res: Response) {
         try {
@@ -164,7 +165,7 @@ export class AuthController {
             }
         }
     }
-
+    @RateLimiterGuard()
     @Post("password-recovery")
     public async recoveryPassword(@Body() emailDto: EmailDto, @Res() res: Response) {
         try {
@@ -178,7 +179,7 @@ export class AuthController {
             }
         }
     }
-
+    @RateLimiterGuard()
     @Post("new-password")
     public async setupNewPassword(@Body() newPasswordDto: NewPasswordDto, @Res() res: Response) {
         try {

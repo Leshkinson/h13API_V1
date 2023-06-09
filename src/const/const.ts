@@ -34,6 +34,6 @@ export interface JWT extends JwtPayload {
 export const SETTINGS_TOKEN = {
     JWT_ACCESS_SECRET: "superpupersecret",
     JWT_REFRESH_SECRET: "superpupermegasecret",
-    TOKEN_ACCESS_LIVE_TIME: "10m",
-    TOKEN_REFRESH_LIVE_TIME: "100m",
+    TOKEN_ACCESS_LIVE_TIME: "10s",
+    TOKEN_REFRESH_LIVE_TIME: "20s",
 };

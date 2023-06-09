@@ -2,7 +2,15 @@ import { Observable } from "rxjs";
 import { Cache } from "cache-manager";
 import { Request, Response } from "express";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { CanActivate, ExecutionContext, HttpStatus, Inject, Injectable } from "@nestjs/common";
+import {
+    applyDecorators,
+    CanActivate,
+    ExecutionContext,
+    HttpStatus,
+    Inject,
+    Injectable,
+    UseGuards,
+} from "@nestjs/common";
 
 let count = 1;
 
@@ -19,19 +27,24 @@ export class _RateLimiter implements CanActivate {
             return `${url}-${agentContext}-${suffix}`;
         };
         const key = generateKey(url, prefixAgent, tracker);
-        this.cacheManager.get(`${key}`).then((r) => r);
-        if (this.cacheManager.get(`${key}`)) {
+        this.cacheManager.get(`${key}`).then(() => console.log("Great"));
+        const some = this.cacheManager.get(`${key}`).then(() => console.log("Great2"));
+        if (some) {
             const foo = this.cacheManager.get(`${key}`);
-            if (Number(foo) > 9) {
+            if (Number(foo) > 5) {
                 response.sendStatus(HttpStatus.TOO_MANY_REQUESTS);
 
                 return;
             }
             count = Number(foo) + 1;
         }
-        this.cacheManager.set(`${key}`, count, 14).then((r) => r);
+        this.cacheManager.set(`${key}`, count, 14).then(() => console.log("Great3"));
         count = 1;
 
         return true;
     }
+}
+
+export function RateLimiterGuard() {
+    return applyDecorators(UseGuards(_RateLimiter));
 }
