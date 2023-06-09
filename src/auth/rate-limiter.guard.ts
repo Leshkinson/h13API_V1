@@ -31,14 +31,14 @@ export class _RateLimiter implements CanActivate {
         const some = this.cacheManager.get(`${key}`).then(() => console.log("Great2"));
         if (some) {
             const foo = this.cacheManager.get(`${key}`);
-            if (Number(foo) > 5) {
+            if (Number(foo) > 4) {
                 response.sendStatus(HttpStatus.TOO_MANY_REQUESTS);
 
                 return;
             }
             count = Number(foo) + 1;
         }
-        this.cacheManager.set(`${key}`, count, 14).then(() => console.log("Great3"));
+        this.cacheManager.set(`${key}`, count, 10).then(() => console.log("Great3"));
         count = 1;
 
         return true;
