@@ -37,15 +37,17 @@ export class SessionsController {
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
             const request = req as RequestWithUser;
-            const { email, deviceId } = request.user;
-            if (!email && !deviceId) {
+            //const { email, deviceId } = request.user;
+            const { refreshToken } = request.cookies;
+            const payload = await this.authService.getPayloadFromToken(refreshToken);
+            if (!payload.email && !payload.deviceId) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 
                 return;
             }
-            const user = await this.usersService.getUserByParam(email);
+            const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
-                await this.sessionsService.deleteSessionWithExcept(String(user._id), deviceId);
+                await this.sessionsService.deleteSessionWithExcept(String(user._id), payload.deviceId);
                 res.sendStatus(HttpStatus.NO_CONTENT);
             }
         } catch (error) {
@@ -59,6 +61,7 @@ export class SessionsController {
     async terminateTheDeviceSession(@Param("deviceId") deviceId: string, @Req() req: Request, @Res() res: Response) {
         try {
             const { deviceId } = req.params;
+            console.log("deviceId", deviceId);
             const { refreshToken } = req.cookies;
             if (!refreshToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
