@@ -38,6 +38,7 @@
     "cookie-parser": "^1.4.6",
     "handlebars": "^4.7.7",
     "mongoose": "^7.1.0",
+    "node-cache": "^5.1.2",
     "nodemailer": "^6.9.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
