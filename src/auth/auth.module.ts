@@ -16,6 +16,7 @@ import { MAILER_OPTIONS, MailerService } from "@nestjs-modules/mailer";
 import { RefreshTokenStrategy } from "./strategies/refreshToken.strategy";
 import { MailModule } from "../sup-services/application/mailer/mail.module";
 import { MailService } from "../sup-services/application/mailer/mail.service";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
     imports: [
@@ -23,6 +24,7 @@ import { MailService } from "../sup-services/application/mailer/mail.service";
         MailModule,
         PassportModule,
         JwtModule.register({ secret: SETTINGS_TOKEN.JWT_REFRESH_SECRET, signOptions: { expiresIn: "300s" } }),
+        CacheModule.register(),
     ],
     controllers: [AuthController],
     providers: [
