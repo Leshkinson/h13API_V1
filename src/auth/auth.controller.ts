@@ -8,7 +8,7 @@ import { RequestWithUser } from "./interface/auth.interface";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
 import { AuthDto, CodeDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
-import { Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import {Body, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards} from "@nestjs/common";
 import { RateLimiterGuard } from "./rate-limiter.guard";
 
 @Controller("auth")
@@ -45,6 +45,7 @@ export class AuthController {
                 });
                 return;
             }
+            throw new UnauthorizedException()
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -147,8 +148,10 @@ export class AuthController {
             const confirmed = await this.usersService.confirmUser(codeDto.code);
             if (confirmed) {
                 res.sendStatus(HttpStatus.NO_CONTENT);
+
+                return;
             }
-            //throw new Error();
+            throw new Error();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.BAD_REQUEST);
