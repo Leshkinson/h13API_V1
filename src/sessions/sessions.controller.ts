@@ -68,26 +68,31 @@ export class SessionsController {
             const { deviceId } = req.params;
             //console.log("deviceId", deviceId);
             const { refreshToken } = req.cookies;
+            console.log("refreshToken", refreshToken);
             if (!refreshToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
             }
             const isBlockedToken = await this.authService.checkTokenByBlackList(refreshToken);
+            console.log("isBlockedToken", isBlockedToken);
             if (!isBlockedToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
             }
             const payload = (await this.authService.getPayloadByRefreshToken(refreshToken)) as JWT;
+            console.log("payload", payload);
             if (!payload) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 
                 return;
             }
             const user = await this.usersService.getUserByParam(payload.email);
+            console.log("user", user);
             if (!user) throw new Error();
             const session = await this.sessionsService.findSession(deviceId);
+            console.log("session", session);
             if (!session) throw new Error();
             if (session.userId !== String(user._id)) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
