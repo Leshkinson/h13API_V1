@@ -60,6 +60,7 @@ export class AuthController {
             console.log("req.path", req.path);
             const request = req as RequestWithUser;
             const { refreshToken } = request.cookies;
+            console.log(refreshToken);
             const payload = await this.authService.getPayloadFromToken(refreshToken);
             //console.log("payload in logout", payload);
             //const { deviceId } = request.user;
