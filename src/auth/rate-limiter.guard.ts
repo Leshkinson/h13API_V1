@@ -50,7 +50,6 @@ const myCache = new NodeCache();
 export class _RateLimiter implements CanActivate {
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const request: Request = context.switchToHttp().getRequest();
-        //const response: Response = context.switchToHttp().getResponse();
         const url = request.url;
         const tracker = request.ip;
         const prefixAgent = request.headers["user-agent"] ? request.headers["user-agent"] : "unKnown";
@@ -58,7 +57,6 @@ export class _RateLimiter implements CanActivate {
             return `${url}-${agentContext}-${suffix}`;
         };
         const key = generateKey(url, prefixAgent, tracker);
-        console.log("key", key);
 
         if (myCache.has(`${key}`)) {
             const foo = myCache.get(`${key}`);

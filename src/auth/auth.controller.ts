@@ -3,13 +3,13 @@ import { AccessGuard } from "./access.guard";
 import { AuthService } from "./auth.service";
 import { RefreshGuard } from "./refresh.guard";
 import { UsersService } from "../users/users.service";
+import { RateLimiterGuard } from "./rate-limiter.guard";
 import { TokenMapper } from "./dto/mapper/token-mapper";
 import { RequestWithUser } from "./interface/auth.interface";
 import { SessionsService } from "../sessions/sessions.service";
 import { ISession } from "../sessions/interface/session.interface";
 import { AuthDto, CodeDto, EmailDto, NewPasswordDto, RegistrationDto } from "./dto/auth.dto";
-import {Body, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards} from "@nestjs/common";
-import { RateLimiterGuard } from "./rate-limiter.guard";
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards } from "@nestjs/common";
 
 @Controller("auth")
 export class AuthController {
@@ -23,7 +23,7 @@ export class AuthController {
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
             const user = await this.usersService.verifyUser(authDto);
-            console.log("user", user);
+            //console.log("user", user);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
                     req.ip,
@@ -45,7 +45,7 @@ export class AuthController {
                 });
                 return;
             }
-            throw new UnauthorizedException()
+            throw new UnauthorizedException();
         } catch (error) {
             if (error instanceof Error) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -57,10 +57,11 @@ export class AuthController {
     @Post("logout")
     public async logout(@Req() req: Request, @Res() res: Response) {
         try {
+            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             const { refreshToken } = request.cookies;
             const payload = await this.authService.getPayloadFromToken(refreshToken);
-            console.log("payload in logout", payload);
+            //console.log("payload in logout", payload);
             //const { deviceId } = request.user;
             //todo change on search by id
             const user = await this.usersService.getUserByParam(payload.email);
@@ -80,12 +81,13 @@ export class AuthController {
     @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
+            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             //const { deviceId } = request.user;
-            console.log(request.cookies)
+            //console.log(request.cookies);
             const { refreshToken } = request.cookies;
             const payload = await this.authService.getPayloadFromToken(refreshToken);
-            console.log("payload in refresh-token", payload);
+            //console.log("payload in refresh-token", payload);
             const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
                 const updateSessionDevice = (await this.sessionsService.updateSession(payload.deviceId)) as ISession;

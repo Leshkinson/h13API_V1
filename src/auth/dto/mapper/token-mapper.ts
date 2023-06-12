@@ -11,6 +11,7 @@ export class TokenMapper {
                 id: model._id,
                 email: model.email,
                 deviceId: model2.deviceId,
+                lastActiveDate: model2.lastActiveDate,
             },
         ];
     }

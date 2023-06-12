@@ -18,6 +18,7 @@ export class SessionsController {
     @Get("devices")
     async getAllDevices(@Req() req: Request, @Res() res: Response) {
         try {
+            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             const { email } = request.user;
             const user = await this.usersService.getUserByParam(email);
@@ -32,14 +33,17 @@ export class SessionsController {
             }
         }
     }
-    @UseGuards(RefreshGuard)
+    //@UseGuards(RefreshGuard)
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
+            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             //const { email, deviceId } = request.user;
             const { refreshToken } = request.cookies;
+            console.log("refreshToken", refreshToken);
             const payload = await this.authService.getPayloadFromToken(refreshToken);
+            console.log("payload", payload);
             if (!payload.email && !payload.deviceId) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 
@@ -60,8 +64,9 @@ export class SessionsController {
     @Delete("devices/:deviceId")
     async terminateTheDeviceSession(@Param("deviceId") deviceId: string, @Req() req: Request, @Res() res: Response) {
         try {
+            console.log("req.path", req.path);
             const { deviceId } = req.params;
-            console.log("deviceId", deviceId);
+            //console.log("deviceId", deviceId);
             const { refreshToken } = req.cookies;
             if (!refreshToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
@@ -69,7 +74,7 @@ export class SessionsController {
                 return;
             }
             const isBlockedToken = await this.authService.checkTokenByBlackList(refreshToken);
-            if (isBlockedToken) {
+            if (!isBlockedToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
