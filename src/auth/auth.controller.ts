@@ -23,7 +23,7 @@ export class AuthController {
     public async login(@Body() authDto: AuthDto, @Req() req: Request, @Res() res: Response) {
         try {
             const user = await this.usersService.verifyUser(authDto);
-            //console.log("user", user);
+            console.log("user", user);
             if (user && user.isConfirmed) {
                 const sessionDevice = await this.sessionsService.generateSession(
                     req.ip,
@@ -60,13 +60,14 @@ export class AuthController {
             console.log("req.path", req.path);
             const request = req as RequestWithUser;
             const { refreshToken } = request.cookies;
-            console.log(refreshToken);
+            //console.log(refreshToken);
             const payload = await this.authService.getPayloadFromToken(refreshToken);
             //console.log("payload in logout", payload);
             //const { deviceId } = request.user;
             //todo change on search by id
             const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
+                console.log("Here");
                 await this.sessionsService.deleteTheSession(String(user._id), payload.deviceId);
                 res.clearCookie("refreshToken");
                 res.sendStatus(HttpStatus.NO_CONTENT);
@@ -78,7 +79,7 @@ export class AuthController {
             }
         }
     }
-    @UseGuards(RefreshGuard)
+    //@UseGuards(RefreshGuard)
     @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {

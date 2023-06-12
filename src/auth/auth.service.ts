@@ -56,14 +56,14 @@ export class AuthService {
         console.log("lastActiveDate in token", lastActiveDate);
         console.log("session?.lastActiveDate", session?.lastActiveDate);
         const check = Date.parse(lastActiveDate) === Date.parse(session?.lastActiveDate);
-        //console.log("check", check);
+        console.log("check", check);
         return check;
     }
 
     public async getPayloadFromToken(refreshToken: string): Promise<JWT> {
         if (!refreshToken) throw new Error();
         const isBlockedToken = await this.checkTokenByBlackList(refreshToken);
-        if (!isBlockedToken) throw new Error();
+        if (isBlockedToken) throw new Error();
         const payload = (await this.getPayloadByRefreshToken(refreshToken)) as JWT;
         if (!payload) throw new Error();
 

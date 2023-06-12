@@ -33,7 +33,7 @@ export class SessionsController {
             }
         }
     }
-    //@UseGuards(RefreshGuard)
+    @UseGuards(RefreshGuard)
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
@@ -76,7 +76,7 @@ export class SessionsController {
             }
             const isBlockedToken = await this.authService.checkTokenByBlackList(refreshToken);
             //console.log("isBlockedToken", isBlockedToken);
-            if (!isBlockedToken) {
+            if (isBlockedToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
