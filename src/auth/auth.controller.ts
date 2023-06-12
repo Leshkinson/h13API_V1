@@ -82,6 +82,7 @@ export class AuthController {
         try {
             const request = req as RequestWithUser;
             //const { deviceId } = request.user;
+            console.log(request.cookies)
             const { refreshToken } = request.cookies;
             const payload = await this.authService.getPayloadFromToken(refreshToken);
             console.log("payload in refresh-token", payload);
