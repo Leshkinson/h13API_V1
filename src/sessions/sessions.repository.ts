@@ -25,6 +25,9 @@ export class SessionsRepository {
             {
                 lastActiveDate: date,
             },
+            {
+                new: true,
+            },
         );
     }
 

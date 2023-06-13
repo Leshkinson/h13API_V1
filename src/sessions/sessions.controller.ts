@@ -18,7 +18,6 @@ export class SessionsController {
     @Get("devices")
     async getAllDevices(@Req() req: Request, @Res() res: Response) {
         try {
-            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             const { email } = request.user;
             const user = await this.usersService.getUserByParam(email);
@@ -37,13 +36,9 @@ export class SessionsController {
     @Delete("devices")
     async terminateDevicesSession(@Req() req: Request, @Res() res: Response) {
         try {
-            //console.log("req.path", req.path);
             const request = req as RequestWithUser;
-            //const { email, deviceId } = request.user;
             const { refreshToken } = request.cookies;
-            //console.log("refreshToken", refreshToken);
             const payload = await this.authService.getPayloadFromToken(refreshToken);
-            //console.log("payload", payload);
             if (!payload.email && !payload.deviceId) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 
@@ -64,35 +59,28 @@ export class SessionsController {
     @Delete("devices/:deviceId")
     async terminateTheDeviceSession(@Param("deviceId") deviceId: string, @Req() req: Request, @Res() res: Response) {
         try {
-            //console.log("req.path", req.path);
             const { deviceId } = req.params;
-            //console.log("deviceId", deviceId);
             const { refreshToken } = req.cookies;
-            //console.log("refreshToken", refreshToken);
             if (!refreshToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
             }
             const isBlockedToken = await this.authService.checkTokenByBlackList(refreshToken);
-            //console.log("isBlockedToken", isBlockedToken);
-            if (isBlockedToken) {
+            if (!isBlockedToken) {
                 res.sendStatus(HttpStatus.UNAUTHORIZED);
 
                 return;
             }
             const payload = (await this.authService.getPayloadByRefreshToken(refreshToken)) as JWT;
-            //console.log("payload", payload);
             if (!payload) {
                 res.sendStatus(HttpStatus.FORBIDDEN);
 
                 return;
             }
             const user = await this.usersService.getUserByParam(payload.email);
-            //console.log("user", user);
             if (!user) throw new Error();
             const session = await this.sessionsService.findSession(deviceId);
-            //console.log("session", session);
             if (!session) throw new Error();
             if (session.userId !== String(user._id)) {
                 res.sendStatus(HttpStatus.FORBIDDEN);

@@ -48,22 +48,15 @@ export class AuthService {
     }
 
     public async checkTokenByBlackList(token: string): Promise<boolean> {
-        const { iat, deviceId, lastActiveDate } = this.jwtService.decode(token) as JwtPayload;
-        console.log("deviceId in auth.service", deviceId);
+        const { deviceId, lastActiveDate } = this.jwtService.decode(token) as JwtPayload;
         const session = await this.sessionsService.findSession(deviceId);
-        console.log("session", session);
-        //console.log("iat", iat);
-        console.log("lastActiveDate in token", lastActiveDate);
-        console.log("session?.lastActiveDate", session?.lastActiveDate);
-        const check = Date.parse(lastActiveDate) === Date.parse(session?.lastActiveDate);
-        console.log("check", check);
-        return check;
+        return lastActiveDate === session?.lastActiveDate;
     }
 
     public async getPayloadFromToken(refreshToken: string): Promise<JWT> {
         if (!refreshToken) throw new Error();
         const isBlockedToken = await this.checkTokenByBlackList(refreshToken);
-        if (isBlockedToken) throw new Error();
+        if (!isBlockedToken) throw new Error();
         const payload = (await this.getPayloadByRefreshToken(refreshToken)) as JWT;
         if (!payload) throw new Error();
 
