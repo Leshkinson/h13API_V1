@@ -63,7 +63,6 @@ export class AuthController {
             //todo change on search by id
             const user = await this.usersService.getUserByParam(payload.email);
             if (user) {
-                console.log("Here");
                 await this.sessionsService.deleteTheSession(String(user._id), payload.deviceId);
                 res.clearCookie("refreshToken");
                 res.sendStatus(HttpStatus.NO_CONTENT);
@@ -79,7 +78,6 @@ export class AuthController {
     @Post("refresh-token")
     public async updatePairTokens(@Req() req: Request, @Res() res: Response) {
         try {
-            console.log("req.path", req.path);
             const request = req as RequestWithUser;
             //const { deviceId } = request.user;
             const { refreshToken } = request.cookies;
